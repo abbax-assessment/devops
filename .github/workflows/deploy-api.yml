@@ -44,13 +44,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        uses: docker/build-push-action@v1.1.0
+        uses: docker/build-push-action@v6
         with:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
           context: .
-          file: ./deployments/api/Dockerfile   
+          file: deployments/api/Dockerfile   
 
   trivy-check:
     runs-on: ubuntu-latest
