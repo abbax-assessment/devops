@@ -64,7 +64,7 @@ jobs:
           context: .
           tags: ${{ steps.docker-metadata.outputs.tags }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
-          push: false     
+          push: true     
           file: deployments/api/Dockerfile 
 
       # - name: Run trivy vulnerability scanner
@@ -85,9 +85,9 @@ jobs:
       #   with:
       #     sarif_file: 'trivy-results.sarif'
 
-      - name: "Push to ECR"
-        run: |
-          docker push ${{ steps.docker-metadata.outputs.tags }}
+      # - name: "Push to ECR"
+      #   run: |
+      #     docker push ${{ steps.docker-metadata.outputs.tags }}
       
         
 
