@@ -87,7 +87,7 @@ jobs:
 
       - name: "Push to ECR"
         run: |
-          docker push ${{ needs.build-and-scan.image_tag }}
+          docker push ${{ steps.docker-metadata.outputs.tags }}
       
         
 
