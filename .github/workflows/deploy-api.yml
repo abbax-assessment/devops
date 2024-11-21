@@ -57,6 +57,8 @@ jobs:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
+          context: .
+          file: deployments/api/Dockerfile 
 
   trivy-check:
     runs-on: ubuntu-latest
