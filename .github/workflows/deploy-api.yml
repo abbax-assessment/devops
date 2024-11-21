@@ -49,14 +49,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: kappa
-        run: |
-          echo $(ls -la)
-          echo $(pwd)
-
       - name: Build Docker image
         uses: docker/build-push-action@v6
         with:
+          context: .
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
