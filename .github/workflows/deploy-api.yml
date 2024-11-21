@@ -50,7 +50,7 @@ jobs:
           tags: ${{ github.event.inputs.tag }}
           push: false     
           context: .
-          file: deployments/api/Dockerfile   
+          file: ./deployments/api/Dockerfile   
 
   trivy-check:
     runs-on: ubuntu-latest
