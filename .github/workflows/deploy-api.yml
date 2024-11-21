@@ -25,6 +25,10 @@ jobs:
           name: ${{ github.event.inputs.artifact-id }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
 
+      - name: Extract artifact
+        run: | 
+          unzip -q ${{ steps.download-artifact.outputs.download-path }} -d ./artifact
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -55,7 +59,7 @@ jobs:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
-          context: ${{ steps.download-artifact.outputs.download-path }}
+          context: ./artifact
           file: deployments/api/Dockerfile 
 
   trivy-check:
