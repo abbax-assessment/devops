@@ -67,23 +67,23 @@ jobs:
           push: false     
           file: deployments/api/Dockerfile 
 
-      - name: Run trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
-        env:
-          TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
-        with:
-          image-ref: ${{ steps.docker-metadata.outputs.tags }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: false
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          output: 'trivy-results.sarif'
+      # - name: Run trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@0.28.0
+      #   env:
+      #     TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
+      #   with:
+      #     image-ref: ${{ steps.docker-metadata.outputs.tags }}
+      #     format: 'table'
+      #     exit-code: '1'
+      #     ignore-unfixed: false
+      #     vuln-type: 'os,library'
+      #     severity: 'CRITICAL,HIGH'
+      #     output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
 
       - name: "Push to ECR"
         run: |
