@@ -47,6 +47,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: check
+        run: echo $(ls -la) && echo $(pwd)
+
       - name: Build Docker image
         uses: docker/build-push-action@v1.1.0
         with:
