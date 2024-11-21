@@ -60,9 +60,11 @@ jobs:
   push:
     runs-on: ubuntu-latest
     needs: build
-      run: |
-        docker tag ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }} ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
-        docker push ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+    steps:
+      - name: "Push to ECR"
+        run: |
+          docker tag ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }} ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+          docker push ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
         
 
 
