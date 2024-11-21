@@ -27,7 +27,7 @@ jobs:
 
       - name: Extract artifact
         run: | 
-          unzip -q ${{ steps.download-artifact.outputs.download-path }} -d ./artifact
+          unzip -q ${{ github.event.inputs.artifact-id }}.zip -d ./artifact
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
