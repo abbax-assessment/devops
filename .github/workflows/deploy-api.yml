@@ -22,6 +22,7 @@ jobs:
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
+        working-directory: ./deployments/api
         with:
           github-token: ${{ secrets.ORG_TOKEN }}
           repository: ${{ vars.DEPLOYMENT_API_REPO }}
@@ -49,6 +50,7 @@ jobs:
 
       - name: Build Docker image
         uses: docker/build-push-action@v1.1.0
+        working-directory: ./deployments/api
         with:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
