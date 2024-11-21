@@ -67,7 +67,7 @@ jobs:
           push: false     
           file: deployments/api/Dockerfile 
     outputs:
-      image_tag: ${{ steps.docker-metadata.outputs.tags[0] }}
+      image_tag: ${{ steps.docker-metadata.outputs.tags }}
 
   trivy-check:
     runs-on: ubuntu-latest
