@@ -34,15 +34,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: download-artifact
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Login to ECR
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.ECR_API_APP_URL }}
-          username: ${{ vars.AWS_ACCESS_KEY_ID }}
-          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Build the image
         run: |
           docker build -t ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+          
   trivy-check:
     runs-on: ubuntu-latest
     needs: build
