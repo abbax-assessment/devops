@@ -16,9 +16,6 @@ defaults:
   run:
     working-directory: ./deployments/api
 
-env:
-  APP_PREFIX: api
-
 jobs:
   download-artifact:
     runs-on: ubuntu-latest
@@ -54,7 +51,7 @@ jobs:
         uses: docker/build-push-action@v1.1.0
         with:
           repository: ${{ vars.ECR_API_APP_URL }}
-          tags: ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+          tags: ${{ github.event.inputs.tag }}
           path: .
           push: false     
 
@@ -65,7 +62,7 @@ jobs:
       - name: Run trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         with:
-          image-ref: ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+          image-ref: ${{ vars.ECR_API_APP_NAME }}:${{ github.event.inputs.tag }}
           format: 'table'
           exit-code: '1'
           ignore-unfixed: false
@@ -83,8 +80,8 @@ jobs:
     steps:
       - name: "Push to ECR"
         run: |
-          docker tag ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }} ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
-          docker push ${{ vars.ECR_API_APP_URL }}/${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
+          docker tag ${{ vars.ECR_API_APP_NAME }}:${{ github.event.inputs.tag }} ${{ vars.ECR_API_APP_URL }}:${{ github.event.inputs.tag }}
+          docker push ${{ vars.ECR_API_APP_URL }}:${{ github.event.inputs.tag }}
         
 
 
