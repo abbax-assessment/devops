@@ -39,6 +39,7 @@ jobs:
         with:
           aws-access-key-id: ${{ vars.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: Login to ECR
         uses: docker/login-action@v3
         with:
@@ -46,7 +47,7 @@ jobs:
       - name: Build the image
         run: |
           docker build -t ${{ env.APP_PREFIX }}:${{ github.event.inputs.tag }}
-          
+
   trivy-check:
     runs-on: ubuntu-latest
     needs: build
