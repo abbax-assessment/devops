@@ -27,6 +27,8 @@ jobs:
 
       - name: Extract artifact
         run: | 
+          echo $(-ls -la)
+          echo $(pwd)
           unzip -q ${{ github.event.inputs.artifact-id }}.zip -d ./artifact
 
       - name: Configure AWS Credentials
