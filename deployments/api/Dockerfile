@@ -1,6 +1,8 @@
 FROM node:20.18.1-alpine3.19 AS base
 
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+RUN apk add --no-cache shadow \
+    && groupadd -r appgroup && useradd -r -g appgroup appuser
+    
 WORKDIR /usr/src/app
 
 COPY ./node_modules ./
