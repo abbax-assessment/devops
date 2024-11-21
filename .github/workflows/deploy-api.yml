@@ -76,9 +76,10 @@ jobs:
       - name: Run trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.28.0
         env:
-          TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
+          TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"   
+          IMAGE_TAG: ${{ needs.build.outputs.image_tag }}     
         with:
-          image-ref: ${{ needs.build.outputs.image_tag }}
+          image-ref: env.IMAGE_TAG
           format: 'table'
           exit-code: '1'
           ignore-unfixed: false
@@ -99,8 +100,10 @@ jobs:
     needs: trivy-check
     steps:
       - name: "Push to ECR"
+        env:
+          IMAGE_TAG: ${{ needs.build.trivy-check.image_tag }}
         run: |
-          docker push ${{ needs.build.outputs.image_tag }}
+          docker push ${{ env.IMAGE_TAG }}
         
 
 
