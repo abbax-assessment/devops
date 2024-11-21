@@ -25,12 +25,6 @@ jobs:
           name: ${{ github.event.inputs.artifact-id }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
 
-      - name: Extract artifact
-        run: | 
-          echo $(ls -la)
-          echo $(pwd)
-          unzip -q ${{ github.event.inputs.artifact-id }}.zip -d ./artifact
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -61,7 +55,7 @@ jobs:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
-          context: ./artifact
+          context: .
           file: deployments/api/Dockerfile 
 
   trivy-check:
