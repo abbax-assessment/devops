@@ -19,7 +19,6 @@ env:
 jobs:
   download-artifact:
     runs-on: ubuntu-latest
-    id: download-artifact
     steps:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v6
