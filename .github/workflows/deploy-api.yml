@@ -12,21 +12,19 @@ on:
         description: 'The tag of the artifact to deploy'
         required: true
         
-jobs:
-  download-artifact:
-    runs-on: ubuntu-latest
+jobs:     
+  build:
+    runs-on: ubuntu-latest    
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
+        id: download-artifact
         with:
           github-token: ${{ secrets.ORG_TOKEN }}
           repository: ${{ vars.DEPLOYMENT_API_REPO }}
           name: ${{ github.event.inputs.artifact-id }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
-  build:
-    runs-on: ubuntu-latest
-    needs: download-artifact
-    steps:
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -57,7 +55,7 @@ jobs:
           repository: ${{ vars.ECR_API_APP_URL }}
           tags: ${{ github.event.inputs.tag }}
           push: false     
-          context: .
+          context: ${{ steps.download-artifact.outputs.download-path }}
           file: deployments/api/Dockerfile 
 
   trivy-check:
