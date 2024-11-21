@@ -21,7 +21,7 @@ jobs:
         with:
           sparse-checkout: |
             deployments/api
-            
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         id: download-artifact
@@ -48,6 +48,11 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: kappa
+        run: |
+          echo $(ls -la)
+          echo $(pwd)
 
       - name: Build Docker image
         uses: docker/build-push-action@v6
