@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "task_exec_policy" {
     sid       = "AllowECROperations"
     effect    = "Allow"
     actions   = ["ecr:GetAuthorizationToken"]
-    resources = [aws_ecr_repository.this.arn]
+    resources = ["*"]
   }
 
   statement {

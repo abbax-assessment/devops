@@ -7,21 +7,21 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count      = length(var.public_subnet_cidrs)
-  vpc_id     = aws_vpc.main.id
-  cidr_block = element(var.public_subnet_cidrs, count.index)
+  count             = length(var.public_subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.public_subnet_cidrs, count.index)
   availability_zone = element(var.azs, count.index)
 
   tags = merge(
-    tomap({ "Name" = "${var.prefix}- public-${count.index + 1}" }),
+    tomap({ "Name" = "${var.prefix}-public-${count.index + 1}" }),
     var.tags
   )
 }
 
 resource "aws_subnet" "private_subnets" {
-  count      = length(var.private_subnet_cidrs)
-  vpc_id     = aws_vpc.main.id
-  cidr_block = element(var.private_subnet_cidrs, count.index)
+  count             = length(var.private_subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.private_subnet_cidrs, count.index)
   availability_zone = element(var.azs, count.index)
 
   tags = merge(
@@ -39,7 +39,7 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_route_table" "public_subnets" {
-  count      = length(var.public_subnet_cidrs)
+  count  = length(var.public_subnet_cidrs)
   vpc_id = aws_vpc.main.id
 
   route {
@@ -61,7 +61,7 @@ resource "aws_route_table_association" "public_subnets_assoc" {
 }
 
 resource "aws_eip" "this" {
-    tags = merge(
+  tags = merge(
     tomap({ "Name" = "${var.prefix}-eip" }),
     var.tags
   )
@@ -77,7 +77,7 @@ resource "aws_nat_gateway" "this" {
 }
 
 resource "aws_route_table" "private_subnets" {
-  count      = length(var.private_subnet_cidrs)
+  count  = length(var.private_subnet_cidrs)
   vpc_id = aws_vpc.main.id
 
   route {
@@ -94,7 +94,7 @@ resource "aws_route_table" "private_subnets" {
 
 # Associate the private route table with a private subnet
 resource "aws_route_table_association" "private_route_assoc" {
-  count      = length(var.private_subnet_cidrs)
-  subnet_id      = aws_subnet.private_subnets[count.index].id  # Replace with your private subnet ID
+  count          = length(var.private_subnet_cidrs)
+  subnet_id      = aws_subnet.private_subnets[count.index].id # Replace with your private subnet ID
   route_table_id = aws_route_table.private_subnets[count.index].id
 }
