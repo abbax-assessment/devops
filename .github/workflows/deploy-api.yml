@@ -11,10 +11,14 @@ on:
       tag:
         description: 'The tag of the artifact to deploy'
         required: true
+
+env:
+  ENVIRONMENT: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'development' }}
         
 jobs:     
   build-scan-push:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest  
+    environment: ${{ env.ENVIRONMENT }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -89,10 +93,11 @@ jobs:
       #   run: |
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
+        environment: ${{ env.ENVIRONMENT }}
         run: |
           sh ./create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
             ${{ vars.CONTAINER_NAME }} \
-            ${{ steps.docker-metadata.outputs.tags }}
-
+            ${{ "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732252760" }}
+# steps.docker-metadata.outputs.tags
 
