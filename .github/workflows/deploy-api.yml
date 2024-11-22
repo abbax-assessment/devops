@@ -90,7 +90,6 @@ jobs:
       #   run: |
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
-        environment: ${{ github.ref_name }}
         run: |
           sh ./create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
