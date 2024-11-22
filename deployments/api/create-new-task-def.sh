@@ -21,7 +21,6 @@ LATEST_TASK_DEF=$(aws ecs describe-task-definition --task-definition "$TASK_FAMI
 CONTAINER_DEFINITIONS=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.containerDefinitions")
 TASK_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.taskRoleArn")
 EXECUTION_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.executionRoleArn")
-NETWORK_MODE=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.networkMode")
 CPU=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.cpu")
 MEMORY=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.memory")
 
