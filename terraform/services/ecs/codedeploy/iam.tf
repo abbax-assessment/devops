@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "codedeploy" {
     actions = ["iam:PassRole"]
 
     resources = [
-      aws_iam_role.codedeploy.arn
+      "*" #TODO
     ]
   }
 

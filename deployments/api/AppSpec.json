@@ -1,0 +1,17 @@
+{
+    "version": 0,
+    "Resources": [
+      {
+        "TargetService": {
+          "Type": "AWS::ECS::Service",
+          "Properties": {
+            "TaskDefinition": "<VALUE>",
+            "LoadBalancerInfo": {
+              "ContainerName": "api",
+              "ContainerPort": 3000
+            }
+          }
+        }
+      }
+    ]
+  }

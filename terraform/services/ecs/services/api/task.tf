@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name      = var.app_name,
-      image     = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:92e65a7-1732250964" # TODO
+      image     = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732251749" # TODO
       cpu       = var.task_definition.app.cpu,
       memory    = var.task_definition.app.memory,
       essential = true,
@@ -61,9 +61,9 @@ resource "aws_ecs_task_definition" "this" {
     aws_iam_role.task_exec_role
   ]
 
-  lifecycle {
-    ignore_changes = [container_definitions]
-  }
+  # lifecycle {
+  #   ignore_changes = [container_definitions]
+  # }
 }
 
 resource "aws_ecs_service" "this" {
@@ -98,6 +98,10 @@ resource "aws_ecs_service" "this" {
     aws_iam_role.task_role,
     aws_iam_role.task_exec_role
   ]
+
+  lifecycle {
+    ignore_changes = [ task_definition ]
+  }
 }
 
 resource "aws_security_group" "service" {
