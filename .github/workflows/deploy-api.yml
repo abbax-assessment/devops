@@ -11,14 +11,11 @@ on:
       tag:
         description: 'The tag of the artifact to deploy'
         required: true
-
-env:
-  ENVIRONMENT: ${{ github.ref_name == 'main' && 'production' || github.ref_name == 'staging' && 'staging' || 'development' }}
         
 jobs:     
   build-scan-push:
     runs-on: ubuntu-latest  
-    environment: ${{ env.ENVIRONMENT }}
+    environment: ${{ github.ref_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -93,7 +90,7 @@ jobs:
       #   run: |
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
-        environment: ${{ env.ENVIRONMENT }}
+        environment: ${{ github.ref_name }}
         run: |
           sh ./create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
