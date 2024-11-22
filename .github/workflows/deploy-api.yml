@@ -91,6 +91,7 @@ jobs:
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
         run: |
+          chmod +x ./deployments/api/create-new-task-def
           sh ./deployments/api/create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
             ${{ vars.CONTAINER_NAME }} \
