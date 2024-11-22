@@ -16,6 +16,9 @@ jobs:
   build-scan-push:
     runs-on: ubuntu-latest  
     environment: ${{ github.ref_name }} # TODO
+    defaults:
+      run:
+        working-directory: deployments/api
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -91,7 +94,7 @@ jobs:
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
         run: |
-          sh create-new-task-def.sh \
+          sh ./create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
             ${{ vars.CONTAINER_NAME }} \
             "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732252760"
