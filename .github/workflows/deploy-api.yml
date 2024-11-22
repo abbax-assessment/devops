@@ -91,8 +91,8 @@ jobs:
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
       - name: Update the task-definition
         run: |
-          chmod +x ./deployments/api/create-new-task-def
-          sh ./deployments/api/create-new-task-def.sh \
+          chmod +x deployments/api/create-new-task-def
+          sh deployments/api/create-new-task-def.sh \
             ${{ vars.TASK_DEF_FAMILY }} \
             ${{ vars.CONTAINER_NAME }} \
             "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732252760"
