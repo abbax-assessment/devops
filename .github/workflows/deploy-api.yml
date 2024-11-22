@@ -89,7 +89,7 @@ jobs:
       # - name: "Push to ECR"
       #   run: |
       #     docker push ${{ steps.docker-metadata.outputs.tags }}
-      - name: Update the task-definition
+      - name: Update the task-definition"
         run: |
           NEW_IMAGE="569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732252760"
           TASK_FAMILY=${{ vars.TASK_DEF_FAMILY }}
