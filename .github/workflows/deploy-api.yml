@@ -140,7 +140,7 @@ jobs:
           DEPLOYMENT_ID=$(aws deploy create-deployment \
             --application-name ${{ vars.CODEDEPLOY_APP_NAME }} \
             --deployment-group-name ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP }} \
-            --revision "revisionType=AppSpecContent,appSpecContent={content=$(cat appspec.yaml | jq -Rs .)}" \
+            --revision "revisionType=AppSpecContent,appSpecContent={content=$(cat appspec.yaml}" \
             --query "deploymentId" \
             --output text)
 
