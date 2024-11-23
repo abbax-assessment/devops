@@ -104,6 +104,8 @@ jobs:
           EXECUTION_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.executionRoleArn")
           NETWORK_MODE=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.networkMode")
           COMPATIBILITIES=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.compatibilities")
+          CPU=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.cpu")
+          MEMORY=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.memory")
 
           # Update the container image
           UPDATED_CONTAINER_DEFINITIONS=$(echo "$CONTAINER_DEFINITIONS" | jq -c --arg cn "$CONTAINER_NAME" --arg ni "$NEW_IMAGE" 'map(if .name == $cn then .image = $ni else . end)')
@@ -119,6 +121,8 @@ jobs:
             --execution-role-arn "$EXECUTION_ROLE_ARN" \
             --network-mode "$NETWORK_MODE" \
             --requires-compatibilities "$COMPATIBILITIES" \
+            --cpu "$CPU" \
+            --memory "$MEMORY" \
             --container-definitions file://"$CONTAINER_DEFINITIONS_FILE" \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
