@@ -121,5 +121,26 @@ jobs:
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
             echo "New Task Definition ARN: $NEW_TASK_DEF_ARN"
+          cat > appspec.yaml <<EOL
+            version: 0.0
+            Resources:
+              - TargetService:
+                  Type: AWS::ECS::Service
+                  Properties:
+                    TaskDefinition: "$NEW_TASK_DEF_ARN"
+                    LoadBalancerInfo:
+                      ContainerName: "$CONTAINER_NAME"
+                      ContainerPort: 3000 # TODO
+          EOL
+
+          # Create a new deployment
+          DEPLOYMENT_ID=$(aws deploy create-deployment \
+            --application-name "$CODEDEPLOY_APP_NAME" \
+            --deployment-group-name "$CODEDEPLOY_DEPLOYMENT_GROUP" \
+            --revision "revisionType=AppSpecContent,appSpecContent={content=$(cat appspec.yaml | jq -Rs .)}" \
+            --query "deploymentId" \
+            --output text)
+
+          echo "Deployment initiated with ID: $DEPLOYMENT_ID"
 # steps.docker-metadata.outputs.tags
 
