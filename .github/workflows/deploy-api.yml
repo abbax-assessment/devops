@@ -118,7 +118,7 @@ jobs:
             --task-role-arn "$TASK_ROLE_ARN" \
             --execution-role-arn "$EXECUTION_ROLE_ARN" \
             --network-mode "$NETWORK_MODE" \
-            --requires-compatibilities "$COMPATIBILITIES"
+            --requires-compatibilities "$COMPATIBILITIES" \
             --container-definitions file://"$CONTAINER_DEFINITIONS_FILE" \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
