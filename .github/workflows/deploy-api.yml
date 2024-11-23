@@ -140,7 +140,7 @@ jobs:
                         TaskDefinition: $NEW_TASK_DEF_ARN
                         LoadBalancerInfo:
                           ContainerName: $CONTAINER_NAME
-                          ContainerPort: 8080
+                          ContainerPort: 3000
           EOL
 
           # Create a new deployment
