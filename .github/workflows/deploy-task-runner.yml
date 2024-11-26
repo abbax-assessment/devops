@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest  
     environment: ${{ github.ref_name }} # TODO
     outputs:
-      image_version: ${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}
-      image_ref: ${{ fromJson(steps.docker-metadata.outputs.tags)[0] }}
+      image_version: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
+      image_ref: ${{ fromJson(steps.docker-metadata.outputs.json).tags[0] }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
         id: download-artifact
         with:
           github-token: ${{ secrets.ORG_TOKEN }}
-          repository: ${{ vars.DEPLOYMENT_API_REPO }}
+          repository: ${{ vars.TASK_RUNNER_REPO }}
           name: ${{ github.event.inputs.artifact-id }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
 
