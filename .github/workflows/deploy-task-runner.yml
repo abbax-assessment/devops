@@ -6,6 +6,9 @@ on:
       workflow-run-id:
         description: 'The upstream workflow run id'
         required: true
+      tag:
+        description: 'The upstream workflow short-sha'
+        required: true
       artifact-name:
         description: 'The artifact name to deploy'
         required: true
@@ -43,7 +46,7 @@ jobs:
           images: |
             "${{ vars.IMAGE_REGISTRY_URL }}/${{ vars.TASK_RUNNER_ECR_NAME }}"
           tags: |
-            type=raw,value={{sha}}-{{date 'X'}}
+            type=raw,value=${{ github.event.inputs.tag }}-{{date 'X'}}
 
       - name: Build Docker image and export
         uses: docker/build-push-action@v6
