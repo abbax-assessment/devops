@@ -83,7 +83,7 @@ jobs:
         TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
       with:
         image-ref: ${{ needs.build.outputs.image_ref }}
-        format: 'table'
+        format: 'sarif'
         exit-code: '1'
         ignore-unfixed: false
         vuln-type: 'os,library'
