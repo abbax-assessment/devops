@@ -6,11 +6,8 @@ on:
       workflow-run-id:
         description: 'The upstream workflow run id'
         required: true
-      artifact-id:
-        description: 'The artifact id to deploy'
-        required: true
-      tag:
-        description: 'The tag of the artifact to deploy'
+      artifact-name:
+        description: 'The artifact name to deploy'
         required: true
         
 jobs:     
@@ -33,7 +30,7 @@ jobs:
         with:
           github-token: ${{ secrets.ORG_TOKEN }}
           repository: ${{ vars.TASK_RUNNER_REPO }}
-          name: ${{ github.event.inputs.artifact-id }}
+          name: ${{ github.event.inputs.artifact-name }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
 
       - name: Set up Docker Buildx
@@ -55,7 +52,7 @@ jobs:
           tags: ${{ steps.docker-metadata.outputs.tags }}
           labels: ${{ steps.docker-metadata.outputs.labels }}
           push: false     
-          file: deployments/api/Dockerfile 
+          file: deployments/task-runner/Dockerfile 
           outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
 
       - name: Upload artifact
