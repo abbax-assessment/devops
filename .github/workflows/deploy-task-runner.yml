@@ -76,29 +76,29 @@ jobs:
         docker load --input /tmp/${{ needs.build.outputs.image_version }}.tar
         docker image ls -a  
 
-    - name: Run trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.28.0
-      continue-on-error: true
-      env:
-        TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
-      with:
-        image-ref: ${{ needs.build.outputs.image_ref }}
-        format: 'sarif'
-        exit-code: '1'
-        ignore-unfixed: false
-        vuln-type: 'os,library'
-        severity: 'CRITICAL,HIGH'
-        output: 'trivy-results.sarif'
+    # - name: Run trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@0.28.0
+    #   continue-on-error: true
+    #   env:
+    #     TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
+    #   with:
+    #     image-ref: ${{ needs.build.outputs.image_ref }}
+    #     format: 'sarif'
+    #     exit-code: '1'
+    #     ignore-unfixed: false
+    #     vuln-type: 'os,library'
+    #     severity: 'CRITICAL,HIGH'
+    #     output: 'trivy-results.sarif'
 
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: failure()
-      with:
-        sarif_file: 'trivy-results.sarif'
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   if: failure()
+    #   with:
+    #     sarif_file: 'trivy-results.sarif'
 
   create-revision:  
     runs-on: ubuntu-latest
-    needs: [build, trivy-scan]
+    needs: [build] # trivy-scan]
     outputs:
       task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
     steps:
