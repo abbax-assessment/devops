@@ -41,7 +41,7 @@ jobs:
         id: docker-metadata
         with:
           images: |
-            ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
+            "${{ vars.IMAGE_REGISTRY_URL }}/${{ vars.TASK_RUNNER_ECR_NAME }}"
           tags: |
             type=raw,value={{sha}}-{{date 'X'}}
 
@@ -98,16 +98,32 @@ jobs:
 
   create-revision:  
     runs-on: ubuntu-latest
-    needs: [build] # trivy-scan]
+    needs: [build, trivy-scan] # trivy-scan]
     outputs:
       task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
       - name: Login to ECR
         uses: docker/login-action@v3
         with:
-          registry: ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
-          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          registry: ${{ vars.IMAGE_REGISTRY_URL }}
+          
+      - name: Download image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.image_version }}
+          path: /tmp
+
+      - name: Load image
+        run: |
+          docker load --input /tmp/${{ needs.build.outputs.image_version }}.tar
+          docker image ls -a  
 
       - name: "Push to ECR"
         run: |
