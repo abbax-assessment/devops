@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name      = var.app_name,
-      image     = "" # TODO
+      image     = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-task-runner-ecr:latest" # TODO
       cpu       = var.task_definition.app.cpu,
       memory    = var.task_definition.app.memory,
       essential = true,
@@ -71,10 +71,6 @@ resource "aws_ecs_service" "this" {
   force_new_deployment = false
 
   propagate_tags = "SERVICE"
-
-  deployment_controller {
-    type = "CODE_DEPLOY"
-  }
 
   network_configuration {
     subnets         = var.private_subnets

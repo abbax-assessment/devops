@@ -14,9 +14,12 @@ on:
         required: true
         
 jobs:     
-  build-scan-push:
+  build:
     runs-on: ubuntu-latest  
     environment: ${{ github.ref_name }} # TODO
+    outputs:
+      image_version: ${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}
+      image_ref: ${{ fromJson(steps.docker-metadata.outputs.tags)[0] }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,15 +27,82 @@ jobs:
           sparse-checkout: |
             deployments/task-runner
 
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v4
-      #   id: download-artifact
-      #   with:
-      #     github-token: ${{ secrets.ORG_TOKEN }}
-      #     repository: ${{ vars.DEPLOYMENT_API_REPO }}
-      #     name: ${{ github.event.inputs.artifact-id }}
-      #     run-id: ${{ github.event.inputs.workflow-run-id }}
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        id: download-artifact
+        with:
+          github-token: ${{ secrets.ORG_TOKEN }}
+          repository: ${{ vars.DEPLOYMENT_API_REPO }}
+          name: ${{ github.event.inputs.artifact-id }}
+          run-id: ${{ github.event.inputs.workflow-run-id }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        uses: docker/metadata-action@v5
+        id: docker-metadata
+        with:
+          images: |
+            ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
+          tags: |
+            type=raw,value={{sha}}-{{date 'X'}}
+
+      - name: Build Docker image and export
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: ${{ steps.docker-metadata.outputs.tags }}
+          labels: ${{ steps.docker-metadata.outputs.labels }}
+          push: false     
+          file: deployments/api/Dockerfile 
+          outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}
+          path: /tmp/${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}.tar
+
+  trivy-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ needs.build.outputs.image_version }}
+        path: /tmp
+
+    - name: Load image
+      run: |
+        docker load --input /tmp/${{ needs.build.outputs.image_version }}.tar
+        docker image ls -a  
+
+    - name: Run trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      env:
+        TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
+      with:
+        image-ref: ${{ needs.build.outputs.image_ref }}
+        format: 'table'
+        exit-code: '1'
+        ignore-unfixed: false
+        vuln-type: 'os,library'
+        severity: 'CRITICAL,HIGH'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  create-revision:  
+    runs-on: ubuntu-latest
+    needs: [build, trivy-scan]
+    outputs:
+      task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
+    steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -40,59 +110,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
-      # - name: Login to ECR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
+      - name: Login to ECR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
 
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v3
-
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
-
-      # - name: Docker meta
-      #   uses: docker/metadata-action@v4
-      #   id: docker-metadata
-      #   with:
-      #     images: |
-      #       ${{ vars.IMAGE_REGISTRY_URL_TASK_RUNNER }}
-      #     tags: |
-      #       type=raw,value={{sha}}-{{date 'X'}}
-
-      # - name: Build Docker image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     tags: ${{ steps.docker-metadata.outputs.tags }}
-      #     labels: ${{ steps.docker-metadata.outputs.labels }}
-      #     push: true     
-      #     file: deployments/api/Dockerfile 
-
-      # - name: Run trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@0.28.0
-      #   env:
-      #     TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
-      #   with:
-      #     image-ref: ${{ steps.docker-metadata.outputs.tags }}
-      #     format: 'table'
-      #     exit-code: '1'
-      #     ignore-unfixed: false
-      #     vuln-type: 'os,library'
-      #     severity: 'CRITICAL,HIGH'
-      #     output: 'trivy-results.sarif'
-
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
-
-      # - name: "Push to ECR"
-      #   run: |
-      #     docker push ${{ steps.docker-metadata.outputs.tags }}
-      - name: Update the task-definition"
+      - name: "Push to ECR"
         run: |
-          NEW_IMAGE="569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-task-runner-ecr:f8b1885-1732252760"
+          docker push ${{ needs.build.outputs.image_ref }}
+
+      - name: Update the task-definition
+        id: create-task-def
+        run: |
+          NEW_IMAGE=${{ needs.build.outputs.image_ref }}
           TASK_FAMILY=${{ vars.TASK_DEF_FAMILY_TASK_RUNNER }}
           CONTAINER_NAME_TASK_RUNNER=${{ vars.CONTAINER_NAME_TASK_RUNNER }}
 
@@ -127,36 +157,20 @@ jobs:
             --container-definitions file://"$CONTAINER_DEFINITIONS_FILE" \
             --query "taskDefinition.taskDefinitionArn" \
             --output text)
-          # TODO add tags
-
-
           
-          echo "New Task Definition ARN: $NEW_TASK_DEF_ARN"
-          APPSPEC_FILE="appspec.yaml"
-          cat > "$APPSPEC_FILE" <<EOL
-          applicationName: ${{ vars.CODEDEPLOY_APP_NAME_TASK_RUNNER }}
-          deploymentGroupName: ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_TASK_RUNNER }}
-          revision:
-            revisionType: AppSpecContent
-            appSpecContent:
-              content: |
-                version: 0.0
-                Resources:
-                  - TargetService:
-                      Type: AWS::ECS::Service
-                      Properties:
-                        TaskDefinition: $NEW_TASK_DEF_ARN
-                        LoadBalancerInfo:
-                          ContainerName: $CONTAINER_NAME_TASK_RUNNER
-                          ContainerPort: 3000
-          EOL
-
-          # Create a new deployment
-          DEPLOYMENT_ID=$(aws deploy create-deployment \
-            --cli-input-yaml file://"$APPSPEC_FILE" \
-            --query "deploymentId" \
+          echo "task_def_arn=$NEW_TASK_DEF_ARN" >> "$GITHUB_OUTPUT"
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [create-revision]
+    steps:
+      - name: Update ECS Service Revision
+        run: |     
+          NEW_TASK_DEF_ARN=$(aws ecs update-service \
+            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
+            --service ${{ vars.ECS_SERVICE_NAME }} \
+            --task-definition ${{ needs.create-revision.outputs.task_def_arn }} \
+            --query "service.taskDefinition" \
             --output text)
 
-          echo "Deployment initiated with ID: $DEPLOYMENT_ID"
-# steps.docker-metadata.outputs.tags
+          echo "Deployed new service revision: $NEW_TASK_DEF_ARN"
 

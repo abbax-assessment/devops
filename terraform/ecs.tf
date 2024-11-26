@@ -1,11 +1,11 @@
 module "ecs" {
-  source = "./services/ecs"
+  source = "./modules/ecs"
   prefix = local.prefix
   tags   = local.common_tags
 }
 
 module "tasks_sqs_queue" {
-  source = "./services/sqs"
+  source = "./modules/sqs"
 
   name                      = "${local.prefix}-tasks"
   allowed_items_max         = 50
@@ -22,7 +22,7 @@ module "tasks_sqs_queue" {
 }
 
 module "service_api" {
-  source = "./services/ecs/services/api"
+  source = "./modules/ecs/services/api"
   prefix = local.prefix
 
   vpc_id                      = module.network.vpc_id
@@ -38,7 +38,7 @@ module "service_api" {
 }
 
 module "service_task_runner" {
-  source = "./services/ecs/services/task-runner"
+  source = "./modules/ecs/services/task-runner"
   prefix = local.prefix
 
   vpc_id                      = module.network.vpc_id
@@ -47,7 +47,7 @@ module "service_task_runner" {
 
   ecs_cluster_id   = module.ecs.ecs_cluster_id
   ecs_cluster_name = module.ecs.ecs_cluster_name
-  task_definition  = var.ecs_service_api_task_definition
+  task_definition  = var.ecs_service_task_runner_task_definition
 
   tags = local.common_tags
 }

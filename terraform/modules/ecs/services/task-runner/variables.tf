@@ -30,6 +30,12 @@ variable "task_definition" {
       cpu    = number
       memory = number
     })
+    autoscale = object({
+      min_capacity           = number
+      max_capacity           = number
+      max_avg_cpu_percentage = number
+      max_avg_ram_percentage = number
+    })
   })
 }
 
@@ -44,6 +50,7 @@ variable "private_subnets" {
 variable "private_subnets_cidr_blocks" {
   type = list(string)
 }
+
 
 
 variable "tags" {

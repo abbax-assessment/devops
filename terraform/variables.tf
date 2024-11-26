@@ -31,6 +31,12 @@ variable "ecs_service_task_runner_task_definition" {
       cpu    = number
       memory = number
     })
+    autoscale = object({
+      min_capacity           = number
+      max_capacity           = number
+      max_avg_cpu_percentage = number
+      max_avg_ram_percentage = number
+    })
   })
 }
 
