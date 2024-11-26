@@ -152,7 +152,7 @@ jobs:
           # Save updated container definitions to a file
           CONTAINER_DEFINITIONS_FILE="container-definitions.json"
           echo "$UPDATED_CONTAINER_DEFINITIONS" > "$CONTAINER_DEFINITIONS_FILE"
-
+          cat $CONTAINER_DEFINITIONS_FILE
           # Register the new task definition
           NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
             --family "$TASK_FAMILY" \
