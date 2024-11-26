@@ -1,21 +1,22 @@
 name: deploy:api
+
 on:
   workflow_dispatch:
     inputs:
       workflow-run-id:
         description: 'The upstream workflow run id'
         required: true
-      artifact-id:
-        description: 'The artifact id to deploy'
-        required: true
-      tag:
-        description: 'The tag of the artifact to deploy'
+      artifact-name:
+        description: 'The artifact name to deploy'
         required: true
         
 jobs:     
-  build-scan-push:
+  build:
     runs-on: ubuntu-latest  
     environment: ${{ github.ref_name }} # TODO
+    outputs:
+      image_version: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
+      image_ref: ${{ fromJson(steps.docker-metadata.outputs.json).tags[0] }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,15 +24,85 @@ jobs:
           sparse-checkout: |
             deployments/api
 
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v4
-      #   id: download-artifact
-      #   with:
-      #     github-token: ${{ secrets.ORG_TOKEN }}
-      #     repository: ${{ vars.DEPLOYMENT_API_REPO }}
-      #     name: ${{ github.event.inputs.artifact-id }}
-      #     run-id: ${{ github.event.inputs.workflow-run-id }}
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        id: download-artifact
+        with:
+          github-token: ${{ secrets.ORG_TOKEN }}
+          repository: ${{ vars.API_REPO }}
+          name: ${{ github.event.inputs.artifact-name }}
+          run-id: ${{ github.event.inputs.workflow-run-id }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        uses: docker/metadata-action@v5
+        id: docker-metadata
+        with:
+          images: |
+            "${{ vars.IMAGE_REGISTRY_URL }}/${{ vars.API_ECR_NAME }}"
+          tags: |
+            type=raw,value={{sha}}-{{date 'X'}}
+
+      - name: Build Docker image and export
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: ${{ steps.docker-metadata.outputs.tags }}
+          labels: ${{ steps.docker-metadata.outputs.labels }}
+          push: false     
+          file: deployments/task-runner/Dockerfile 
+          outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
+          path: /tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
+
+  trivy-scan:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Download image artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: ${{ needs.build.outputs.image_version }}
+        path: /tmp
+
+    - name: Load image
+      run: |
+        docker load --input /tmp/${{ needs.build.outputs.image_version }}.tar
+        docker image ls -a  
+
+    # - name: Run trivy vulnerability scanner
+    #   uses: aquasecurity/trivy-action@0.28.0
+    #   continue-on-error: true
+    #   env:
+    #     TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
+    #   with:
+    #     image-ref: ${{ needs.build.outputs.image_ref }}
+    #     format: 'sarif'
+    #     exit-code: '1'
+    #     ignore-unfixed: false
+    #     vuln-type: 'os,library'
+    #     severity: 'CRITICAL,HIGH'
+    #     output: 'trivy-results.sarif'
+
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v3
+    #   if: failure()
+    #   with:
+    #     sarif_file: 'trivy-results.sarif'
+
+  deploy-revision:  
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }} # TODO
+    needs: [build, trivy-scan] # trivy-scan]
+    outputs:
+      task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
+    steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -39,102 +110,40 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
-      # - name: Login to ECR
-      #   uses: docker/login-action@v3
-      #   with:
-      #     registry: ${{ vars.IMAGE_REGISTRY_URL_API }}
-
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v3
-
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v3
-
-      # - name: Docker meta
-      #   uses: docker/metadata-action@v4
-      #   id: docker-metadata
-      #   with:
-      #     images: |
-      #       ${{ vars.IMAGE_REGISTRY_URL_API }}
-      #     tags: |
-      #       type=raw,value={{sha}}-{{date 'X'}}
-
-      # - name: Build Docker image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     tags: ${{ steps.docker-metadata.outputs.tags }}
-      #     labels: ${{ steps.docker-metadata.outputs.labels }}
-      #     push: true     
-      #     file: deployments/api/Dockerfile 
-
-      # - name: Run trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@0.28.0
-      #   env:
-      #     TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
-      #   with:
-      #     image-ref: ${{ steps.docker-metadata.outputs.tags }}
-      #     format: 'table'
-      #     exit-code: '1'
-      #     ignore-unfixed: false
-      #     vuln-type: 'os,library'
-      #     severity: 'CRITICAL,HIGH'
-      #     output: 'trivy-results.sarif'
-
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
-
-      # - name: "Push to ECR"
-      #   run: |
-      #     docker push ${{ steps.docker-metadata.outputs.tags }}
-      - name: Update the task-definition"
-        run: |
-          NEW_IMAGE="569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732252760"
-          TASK_FAMILY=${{ vars.TASK_DEF_FAMILY_API }}
-          CONTAINER_NAME_API=${{ vars.CONTAINER_NAME_API }}
-
-          # Fetch the latest task definition
-          LATEST_TASK_DEF=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY")
-
-          # Extract necessary fields
-          CONTAINER_DEFINITIONS=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.containerDefinitions")
-          TASK_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.taskRoleArn")
-          EXECUTION_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.executionRoleArn")
-          NETWORK_MODE=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.networkMode")
-          COMPATIBILITIES=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.compatibilities")
-          CPU=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.cpu")
-          MEMORY=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.memory")
-
-          # Update the container image
-          UPDATED_CONTAINER_DEFINITIONS=$(echo "$CONTAINER_DEFINITIONS" | jq -c --arg cn "$CONTAINER_NAME_API" --arg ni "$NEW_IMAGE" 'map(if .name == $cn then .image = $ni else . end)')
-
-          # Save updated container definitions to a file
-          CONTAINER_DEFINITIONS_FILE="container-definitions.json"
-          echo "$UPDATED_CONTAINER_DEFINITIONS" > "$CONTAINER_DEFINITIONS_FILE"
-
-          # Register the new task definition
-          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --family "$TASK_FAMILY" \
-            --task-role-arn "$TASK_ROLE_ARN" \
-            --execution-role-arn "$EXECUTION_ROLE_ARN" \
-            --network-mode "$NETWORK_MODE" \
-            --requires-compatibilities "$COMPATIBILITIES" \
-            --cpu "$CPU" \
-            --memory "$MEMORY" \
-            --container-definitions file://"$CONTAINER_DEFINITIONS_FILE" \
-            --query "taskDefinition.taskDefinitionArn" \
-            --output text)
-          # TODO add tags
-
-
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
           
-          echo "New Task Definition ARN: $NEW_TASK_DEF_ARN"
+      - name: Download image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.image_version }}
+          path: /tmp
+
+      - name: Load image
+        run: |
+          docker load --input /tmp/${{ needs.build.outputs.image_version }}.tar
+          docker image ls -a  
+
+      - name: "Push to ECR"
+        run: |
+          docker push ${{ needs.build.outputs.image_ref }}
+
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition ${{ vars.TASK_DEF_FAMILY_API }} --query taskDefinition > task-definition.json
+
+      - name: Fill in the new image ID in the ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ vars.CONTAINER_NAME_API }}
+          image: ${{ needs.build.outputs.image_ref }}
+      
+      - name: Write AppSpec.json # TODO
+        run: | 
           APPSPEC_FILE="appspec.yaml"
           cat > "$APPSPEC_FILE" <<EOL
-          applicationName: ${{ vars.CODEDEPLOY_APP_NAME_API }}
-          deploymentGroupName: ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_API }}
           revision:
             revisionType: AppSpecContent
             appSpecContent:
@@ -144,18 +153,17 @@ jobs:
                   - TargetService:
                       Type: AWS::ECS::Service
                       Properties:
-                        TaskDefinition: $NEW_TASK_DEF_ARN
                         LoadBalancerInfo:
-                          ContainerName: $CONTAINER_NAME_API
+                          ContainerName: api
                           ContainerPort: 3000
           EOL
 
-          # Create a new deployment
-          DEPLOYMENT_ID=$(aws deploy create-deployment \
-            --cli-input-yaml file://"$APPSPEC_FILE" \
-            --query "deploymentId" \
-            --output text)
-
-          echo "Deployment initiated with ID: $DEPLOYMENT_ID"
-# steps.docker-metadata.outputs.tags
-
+      - name: Update ECS Service Revision
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ vars.ECS_CLUSTER_NAME }}
+          service: ${{ vars.ECS_SERVICE_NAME }}
+          codedeploy-deployment-group: $ {{ vars.CODEDEPLOY_APP_NAME_API }}
+          codedeploy-application: $ {{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_API }}
+          wait-for-service-stability: true
