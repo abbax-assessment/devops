@@ -56,13 +56,13 @@ jobs:
           labels: ${{ steps.docker-metadata.outputs.labels }}
           push: false     
           file: deployments/api/Dockerfile 
-          outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}.tar
+          outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}
-          path: /tmp/${{ fromJson(steps.docker-metadata.outputs.labels)['org.opencontainers.image.version'] }}.tar
+          name: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
+          path: /tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
 
   trivy-scan:
     runs-on: ubuntu-latest
