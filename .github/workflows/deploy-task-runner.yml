@@ -127,59 +127,26 @@ jobs:
         run: |
           docker push ${{ needs.build.outputs.image_ref }}
 
-      - name: Update the task-definition
-        id: create-task-def
+      - name: Download task definition
         run: |
-          NEW_IMAGE=${{ needs.build.outputs.image_ref }}
-          TASK_FAMILY=${{ vars.TASK_DEF_FAMILY_TASK_RUNNER }}
-          CONTAINER_NAME_TASK_RUNNER=${{ vars.CONTAINER_NAME_TASK_RUNNER }}
+          aws ecs describe-task-definition --task-definition ${{ vars.TASK_DEF_FAMILY_TASK_RUNNER }} --query taskDefinition > task-definition.json
 
-          # Fetch the latest task definition
-          LATEST_TASK_DEF=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY")
-          echo $LATEST_TASK_DEF # DEBUG
-          # Extract necessary fields
-          CONTAINER_DEFINITIONS=$(echo "$LATEST_TASK_DEF" | jq ".taskDefinition.containerDefinitions")
-          TASK_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.taskRoleArn")
-          EXECUTION_ROLE_ARN=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.executionRoleArn")
-          NETWORK_MODE=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.networkMode")
-          COMPATIBILITIES=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.compatibilities")
-          CPU=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.cpu")
-          MEMORY=$(echo "$LATEST_TASK_DEF" | jq -r ".taskDefinition.memory")
-
-          # Update the container image
-          UPDATED_CONTAINER_DEFINITIONS=$(echo "$CONTAINER_DEFINITIONS" | jq -c --arg cn "$CONTAINER_NAME_TASK_RUNNER" --arg ni "$NEW_IMAGE" 'map(if .name == $cn then .image = $ni else . end)')
-          echo $UPDATED_CONTAINER_DEFINITIONS # DEBUG
-
-          # Save updated container definitions to a file
-          CONTAINER_DEFINITIONS_FILE="container-definitions.json"
-          echo "$UPDATED_CONTAINER_DEFINITIONS" > "$CONTAINER_DEFINITIONS_FILE"
-          cat $CONTAINER_DEFINITIONS_FILE #DEBUG
-          # Register the new task definition
-          NEW_TASK_DEF_ARN=$(aws ecs register-task-definition \
-            --family "$TASK_FAMILY" \
-            --task-role-arn "$TASK_ROLE_ARN" \
-            --execution-role-arn "$EXECUTION_ROLE_ARN" \
-            --network-mode "$NETWORK_MODE" \
-            --requires-compatibilities "$COMPATIBILITIES" \
-            --cpu "$CPU" \
-            --memory "$MEMORY" \
-            --container-definitions file://"$CONTAINER_DEFINITIONS_FILE" \
-            --query "taskDefinition.taskDefinitionArn" \
-            --output text)
-          
-          echo "task_def_arn=$NEW_TASK_DEF_ARN" >> "$GITHUB_OUTPUT"
+      - name: Fill in the new image ID in the ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ vars.CONTAINER_NAME_TASK_RUNNER }}
+          image: ${{ needs.build.outputs.image_ref }}
   deploy:
     runs-on: ubuntu-latest
     needs: [create-revision]
     steps:
       - name: Update ECS Service Revision
-        run: |     
-          NEW_TASK_DEF_ARN=$(aws ecs update-service \
-            --cluster ${{ vars.ECS_CLUSTER_NAME }} \
-            --service ${{ vars.ECS_SERVICE_NAME }} \
-            --task-definition ${{ needs.create-revision.outputs.task_def_arn }} \
-            --query "service.taskDefinition" \
-            --output text)
-
-          echo "Deployed new service revision: $NEW_TASK_DEF_ARN"
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          cluster: ${{ vars.ECS_CLUSTER_NAME }}
+          service: ${{ vars.ECS_SERVICE_NAME }}
+          wait-for-service-stability: true
 
