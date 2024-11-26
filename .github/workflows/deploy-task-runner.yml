@@ -96,7 +96,7 @@ jobs:
     #   with:
     #     sarif_file: 'trivy-results.sarif'
 
-  create-revision:  
+  deploy-revision:  
     runs-on: ubuntu-latest
     environment: ${{ github.ref_name }} # TODO
     needs: [build, trivy-scan] # trivy-scan]
@@ -139,11 +139,7 @@ jobs:
           task-definition: task-definition.json
           container-name: ${{ vars.CONTAINER_NAME_TASK_RUNNER }}
           image: ${{ needs.build.outputs.image_ref }}
-  deploy:
-    runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }} # TODO
-    needs: [create-revision]
-    steps:
+
       - name: Update ECS Service Revision
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
