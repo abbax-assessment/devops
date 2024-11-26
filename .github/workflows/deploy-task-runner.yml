@@ -98,6 +98,7 @@ jobs:
 
   create-revision:  
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }} # TODO
     needs: [build, trivy-scan] # trivy-scan]
     outputs:
       task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
@@ -140,6 +141,7 @@ jobs:
           image: ${{ needs.build.outputs.image_ref }}
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.ref_name }} # TODO
     needs: [create-revision]
     steps:
       - name: Update ECS Service Revision
