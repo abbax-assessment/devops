@@ -148,6 +148,6 @@ jobs:
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           cluster: ${{ vars.ECS_CLUSTER_NAME }}
-          service: ${{ vars.ECS_SERVICE_NAME }}
+          service: ${{ vars.ECS_SERVICE_TASK_RUNNER_NAME }}
           wait-for-service-stability: true
 
