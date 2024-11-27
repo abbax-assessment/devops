@@ -7,10 +7,14 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.task_definition.task.memory
   container_definitions = jsonencode([
     {
-      name      = var.app_name,
-      image     = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-task-runner-ecr:latest" # TODO
-      cpu       = var.task_definition.app.cpu,
-      memory    = var.task_definition.app.memory,
+      name   = var.app_name,
+      image  = local.initial_image_uri,
+      cpu    = var.task_definition.app.cpu,
+      memory = var.task_definition.app.memory,
+      environment = [
+        { name : "TASKS_QUEUE_URL", value : var.task_queue_sqs_url },
+        { name : "ENVIRONMENT", value : terraform.workspace },
+      ]
       essential = true,
       logConfiguration = {
         logDriver : "awslogs",
@@ -83,7 +87,7 @@ resource "aws_ecs_service" "this" {
   ]
 
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = [task_definition, desired_count]
   }
 }
 

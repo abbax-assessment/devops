@@ -7,10 +7,15 @@ resource "aws_ecs_task_definition" "this" {
   memory                   = var.task_definition.task.memory
   container_definitions = jsonencode([
     {
-      name      = var.app_name,
-      image     = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-dev-api-ecr:f8b1885-1732251749" # TODO
-      cpu       = var.task_definition.app.cpu,
-      memory    = var.task_definition.app.memory,
+      name   = var.app_name,
+      image  = local.initial_image_uri,
+      cpu    = var.task_definition.app.cpu,
+      memory = var.task_definition.app.memory,
+      environment = [
+        { name : "TASKS_QUEUE_URL", value : var.task_queue_sqs_url },
+        { name : "PORT", value : tostring(var.port) },
+        { name : "ENVIRONMENT", value : terraform.workspace },
+      ]
       essential = true,
       logConfiguration = {
         logDriver : "awslogs",
@@ -61,9 +66,9 @@ resource "aws_ecs_task_definition" "this" {
     aws_iam_role.task_exec_role
   ]
 
-  # lifecycle {
-  #   ignore_changes = [container_definitions]
-  # }
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
 }
 
 resource "aws_ecs_service" "this" {
@@ -100,7 +105,7 @@ resource "aws_ecs_service" "this" {
   ]
 
   lifecycle {
-    ignore_changes = [task_definition, load_balancer]
+    ignore_changes = [task_definition, load_balancer, desired_count]
   }
 }
 

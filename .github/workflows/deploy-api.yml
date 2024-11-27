@@ -147,18 +147,15 @@ jobs:
         run: | 
           APPSPEC_FILE="appspec.yaml"
           cat > "$APPSPEC_FILE" <<EOL
-          revision:
-            revisionType: AppSpecContent
-            appSpecContent:
-              content: |
-                version: 0.0
-                Resources:
-                  - TargetService:
-                      Type: AWS::ECS::Service
-                      Properties:
-                        LoadBalancerInfo:
-                          ContainerName: api
-                          ContainerPort: 3000
+          version: 0.0
+          Resources:
+            - TargetService:
+                Type: AWS::ECS::Service
+                Properties:
+                  TaskDefinition: $
+                  LoadBalancerInfo:
+                    ContainerName: api
+                    ContainerPort: 3000
           EOL
 
       - name: Update ECS Service Revision
@@ -167,6 +164,7 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           cluster: ${{ vars.ECS_CLUSTER_NAME }}
           service: ${{ vars.ECS_SERVICE_API_NAME }}
+          wait-for-service-stability: true
+          codedeploy-appspec: appspec.yaml
           codedeploy-deployment-group: ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_API }}
           codedeploy-application: ${{ vars.CODEDEPLOY_APP_NAME_API }}
-          wait-for-service-stability: true

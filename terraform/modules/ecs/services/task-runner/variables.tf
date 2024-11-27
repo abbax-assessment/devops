@@ -39,6 +39,10 @@ variable "task_definition" {
   })
 }
 
+variable "task_queue_sqs_url" {
+  type = string
+}
+
 variable "vpc_id" {
   type = string
 }
