@@ -167,6 +167,6 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           cluster: ${{ vars.ECS_CLUSTER_NAME }}
           service: ${{ vars.ECS_SERVICE_API_NAME }}
-          codedeploy-deployment-group: $ {{ vars.CODEDEPLOY_APP_NAME_API }}
-          codedeploy-application: $ {{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_API }}
+          codedeploy-deployment-group: ${{ vars.CODEDEPLOY_APP_NAME_API }}
+          codedeploy-application: ${{ vars.CODEDEPLOY_DEPLOYMENT_GROUP_API }}
           wait-for-service-stability: true
