@@ -12,11 +12,14 @@ on:
       artifact-name:
         description: 'The artifact name to deploy'
         required: true
+      environment:
+        description: 'The environment to deploy'
+        required: true
         
 jobs:     
   build:
     runs-on: ubuntu-latest  
-    environment: ${{ github.ref_name }} # TODO
+    environment: 'api-${{ github.event.inputs.environment }}'
     outputs:
       image_version: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
       image_ref: ${{ fromJson(steps.docker-metadata.outputs.json).tags[0] }}
@@ -101,7 +104,7 @@ jobs:
 
   deploy-revision:  
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }} # TODO
+    environment: 'api-${{ github.event.inputs.environment }}' # TODO
     needs: [build, trivy-scan] # trivy-scan]
     outputs:
       task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
@@ -154,8 +157,8 @@ jobs:
                 Properties:
                   TaskDefinition: $
                   LoadBalancerInfo:
-                    ContainerName: api
-                    ContainerPort: 3000
+                    ContainerName: ${{ vars.CONTAINER_NAME_API }}
+                    ContainerPort: ${{ vars.API_APP_PORT }}
           EOL
 
       - name: Update ECS Service Revision

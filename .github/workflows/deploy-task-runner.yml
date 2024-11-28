@@ -16,7 +16,7 @@ on:
 jobs:     
   build:
     runs-on: ubuntu-latest  
-    environment: ${{ github.ref_name }} # TODO
+    environment: 'task-runner-${{ github.event.inputs.environment }}' # TODO
     outputs:
       image_version: ${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}
       image_ref: ${{ fromJson(steps.docker-metadata.outputs.json).tags[0] }}
@@ -101,7 +101,7 @@ jobs:
 
   deploy-revision:  
     runs-on: ubuntu-latest
-    environment: ${{ github.ref_name }} # TODO
+    environment: 'task-runner-${{ github.event.inputs.environment }}' # TODO
     needs: [build, trivy-scan] # trivy-scan]
     outputs:
       task_def_arn: ${{ steps.create-task-def.outputs.task_def_arn}}
