@@ -8,6 +8,7 @@ resource "aws_sqs_queue" "queue" {
     deadLetterTargetArn = aws_sqs_queue.deadletter_queue.arn,
     maxReceiveCount     = var.max_task_receive_count
   })
+  
   tags = var.tags
 }
 

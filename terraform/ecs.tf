@@ -50,6 +50,7 @@ module "service_task_runner" {
   ecs_cluster_name   = module.ecs.ecs_cluster_name
   task_definition    = var.ecs_service_task_runner_task_definition
   task_queue_sqs_url = module.tasks_sqs_queue.queue_url
+  autoscale_alert_sns_topics = [module.sns_slack_topic[0].sns_topic_arn] # TODO
 
   tags = local.common_tags
 }

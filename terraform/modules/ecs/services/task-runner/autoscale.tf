@@ -146,7 +146,13 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
 
   }
 
-  alarm_actions = [aws_appautoscaling_policy.cpu_scale_out.arn]
+  alarm_actions = concat(
+    var.autoscale_alert_sns_topics,
+    [aws_appautoscaling_policy.cpu_scale_out.arn]
+  )
+
+  ok_actions = var.autoscale_alert_sns_topics
+
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_in" {
@@ -162,7 +168,14 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_in" {
     ClusterName = var.ecs_cluster_name
     ServiceName = aws_ecs_service.this.name
   }
-  alarm_actions = [aws_appautoscaling_policy.cpu_scale_in.arn]
+
+  alarm_actions = concat(
+    var.autoscale_alert_sns_topics,
+    [aws_appautoscaling_policy.cpu_scale_in.arn]
+  )
+
+  ok_actions = var.autoscale_alert_sns_topics
+
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_scale_out" {
@@ -178,12 +191,18 @@ resource "aws_cloudwatch_metric_alarm" "memory_scale_out" {
     ClusterName = var.ecs_cluster_name
     ServiceName = aws_ecs_service.this.name
   }
-  alarm_actions = [aws_appautoscaling_policy.memory_scale_out.arn]
+
+  alarm_actions = concat(
+    var.autoscale_alert_sns_topics,
+    [aws_appautoscaling_policy.memory_scale_out.arn]
+  )
+
+  ok_actions = var.autoscale_alert_sns_topics
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_scale_in" {
   alarm_name          = "${local.service_prefix}-memory-scale-in-alarm"
-  comparison_operator = "GreaterThanThreshold"
+  comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1
   metric_name         = "MemoryUtilization"
   namespace           = "AWS/ECS"
@@ -194,5 +213,11 @@ resource "aws_cloudwatch_metric_alarm" "memory_scale_in" {
     ClusterName = var.ecs_cluster_name
     ServiceName = aws_ecs_service.this.name
   }
-  alarm_actions = [aws_appautoscaling_policy.memory_scale_in.arn]
+
+  alarm_actions = concat(
+    var.autoscale_alert_sns_topics,
+    [aws_appautoscaling_policy.memory_scale_in.arn]
+  )
+
+  ok_actions = var.autoscale_alert_sns_topics
 }

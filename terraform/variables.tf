@@ -43,3 +43,16 @@ variable "ecs_service_task_runner_task_definition" {
 variable "prefix" {
   type = string
 }
+
+variable "notifications_channel_slack_webhook" {
+  type = string
+}
+
+variable "slack_webhook_url" {
+  type    = string
+  default = null
+}
+
+variable "github_token" {
+  type = string  
+}

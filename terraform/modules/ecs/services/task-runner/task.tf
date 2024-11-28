@@ -74,7 +74,7 @@ resource "aws_ecs_service" "this" {
 
   force_new_deployment = false
 
-  propagate_tags = "SERVICE"
+  propagate_tags = "NONE"
 
   network_configuration {
     subnets         = var.private_subnets

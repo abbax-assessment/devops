@@ -1,12 +1,13 @@
 data "aws_region" "current" {}
 
 locals {
-  service_prefix = "${var.prefix}-${var.app_name}"
+  service_prefix    = "${var.prefix}-${var.app_name}"
   initial_image_uri = length(data.aws_ecr_image.latest) > 0 ? data.aws_ecr_image.latest[0].image_uri : "scratch"
+  ecr_repo_name = "${local.service_prefix}-ecr"
 }
 
 resource "aws_ecr_repository" "this" {
-  name                 = "${local.service_prefix}-ecr"
+  name                 = local.ecr_repo_name
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {

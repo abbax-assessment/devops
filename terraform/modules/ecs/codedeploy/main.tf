@@ -1,5 +1,6 @@
 locals {
   name = "${var.prefix}-${var.name}"
+  deployment_group_name = "${local.name}-deploy-group"
 }
 
 resource "aws_codedeploy_app" "this" {
@@ -8,7 +9,7 @@ resource "aws_codedeploy_app" "this" {
 }
 resource "aws_codedeploy_deployment_group" "this" {
   app_name               = aws_codedeploy_app.this.name
-  deployment_group_name  = "${local.name}-deploy-group"
+  deployment_group_name  = local.deployment_group_name
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
   service_role_arn       = aws_iam_role.codedeploy.arn
 

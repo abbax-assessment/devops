@@ -55,9 +55,11 @@ variable "private_subnets_cidr_blocks" {
   type = list(string)
 }
 
-
+variable "autoscale_alert_sns_topics" {
+  type    = list(string)
+  default = []
+}
 
 variable "tags" {
   type = map(any)
 }
-

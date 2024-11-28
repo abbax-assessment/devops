@@ -82,7 +82,7 @@ resource "aws_ecs_service" "this" {
 
   force_new_deployment = false
 
-  propagate_tags = "SERVICE"
+  propagate_tags = "NONE"
 
   deployment_controller {
     type = "CODE_DEPLOY"
