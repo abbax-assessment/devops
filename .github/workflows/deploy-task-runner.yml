@@ -12,6 +12,9 @@ on:
       artifact-name:
         description: 'The artifact name to deploy'
         required: true
+      environment:
+        description: 'The environment to deploy'
+        required: true
         
 jobs:     
   build:
