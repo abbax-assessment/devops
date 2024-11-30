@@ -42,6 +42,7 @@ jobs:
           restore-keys: terraform-cache-
 
       - name: Terraform Init
+        working-directory: terraform
         run: |
           terraform init
 
@@ -57,6 +58,7 @@ jobs:
             terraform
 
       - name: terraform validate
+        working-directory: terraform
         run: terraform validate
 
   trivy-scan:
@@ -97,8 +99,15 @@ jobs:
         with:
           sparse-checkout: |
             terraform
+
+      - name: terraform init
+        working-directory: terraform
+        run: terraform init
+
       - name: terraform workspace select
+        working-directory: terraform
         run: terraform workspace select ${{ github.ref_name }}
 
       - name: terraform apply
+        working-directory: terraform
         run: terraform apply -var-file=./variables/${{ github.ref_name }}.tfvars -auto-approve
