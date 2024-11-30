@@ -12,6 +12,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_vpc_security_group_ingress_rule" "public_access" {
   security_group_id = aws_security_group.alb.id
+  description = "Allow public access"
 
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80
@@ -21,6 +22,7 @@ resource "aws_vpc_security_group_ingress_rule" "public_access" {
 
 resource "aws_vpc_security_group_egress_rule" "service_access" {
   security_group_id = aws_security_group.alb.id
+  description = "Allow access from api ecs service"
 
   referenced_security_group_id = aws_security_group.service.id
   from_port                    = var.port
@@ -37,20 +39,21 @@ resource "aws_alb" "this" {
 }
 
 resource "aws_alb_target_group" "blue" {
-  name        = "${var.prefix}-${var.app_name}-blue-tg"
-  port        = var.port
-  protocol    = "HTTP"
-  vpc_id      = var.vpc_id
-  target_type = "ip"
+  name                 = "${var.prefix}-${var.app_name}-blue-tg"
+  port                 = var.port
+  protocol             = "HTTP"
+  vpc_id               = var.vpc_id
+  target_type          = "ip"
+  deregistration_delay = 5
 
   health_check {
-    healthy_threshold   = 3
-    interval            = 30
+    healthy_threshold   = 2
+    interval            = 5
     protocol            = "HTTP"
     matcher             = 200
     timeout             = 3
     path                = "/health-check"
-    unhealthy_threshold = 2
+    unhealthy_threshold = 3
   }
 }
 

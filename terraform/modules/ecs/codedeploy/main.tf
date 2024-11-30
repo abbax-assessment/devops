@@ -1,5 +1,5 @@
 locals {
-  name = "${var.prefix}-${var.name}"
+  name                  = "${var.prefix}-${var.name}"
   deployment_group_name = "${local.name}-deploy-group"
 }
 

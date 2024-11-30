@@ -3,7 +3,7 @@ data "aws_region" "current" {}
 locals {
   service_prefix    = "${var.prefix}-${var.app_name}"
   initial_image_uri = length(data.aws_ecr_image.latest) > 0 ? data.aws_ecr_image.latest[0].image_uri : "scratch"
-  ecr_repo_name = "${local.service_prefix}-ecr"
+  ecr_repo_name     = "${local.service_prefix}-ecr"
 }
 
 resource "aws_ecr_repository" "this" {
@@ -26,8 +26,6 @@ data "aws_ecr_image" "latest" {
   repository_name = data.aws_ecr_repository.this.name
   most_recent     = true
 }
-
-
 
 
 resource "aws_cloudwatch_log_group" "this" {
@@ -56,6 +54,8 @@ module "deploy" {
   ecs_cluster_name = var.ecs_cluster_name
   ecs_service_name = aws_ecs_service.this.name
   ecs_service_id   = aws_ecs_service.this.id
+  ecs_service_arn = aws_ecs_service.this.arn
+  ecs_task_arn = aws_ecs_task_definition.this.arn
 
   tags = var.tags
 }

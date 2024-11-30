@@ -54,5 +54,5 @@ variable "slack_webhook_url" {
 }
 
 variable "github_token" {
-  type = string  
+  type = string
 }

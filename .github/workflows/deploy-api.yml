@@ -60,6 +60,8 @@ jobs:
           push: false     
           file: deployments/api/Dockerfile 
           outputs: type=docker,dest=/tmp/${{ fromJson(steps.docker-metadata.outputs.json).labels['org.opencontainers.image.version'] }}.tar
+          cache-from: type=registry,ref=user/app:latest
+          cache-to: type=inline
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

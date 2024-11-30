@@ -22,6 +22,14 @@ variable "ecs_service_id" {
   type = string
 }
 
+variable "ecs_service_arn" {
+  type = string
+}
+
+variable "ecs_task_arn" {
+  type = string
+}
+
 variable "aws_alb_default_listener_arn" {
   type = string
 }

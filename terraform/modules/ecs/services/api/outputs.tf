@@ -20,7 +20,7 @@ output "task_family_name" {
 
 output "codedeploy" {
   value = {
-    app_name = module.deploy.codedeploy_app_name
+    app_name   = module.deploy.codedeploy_app_name
     group_name = module.deploy.codedeploy_deployment_group_name
   }
 }
@@ -31,6 +31,10 @@ output "container_app_name" {
 
 output "ecs_service_name" {
   value = aws_ecs_service.this.name
+}
+
+output "ecs_service_arn" {
+  value = aws_ecs_service.this.arn
 }
 
 output "api_app_port" {

@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   terraform:
-    image: hashicorp/terraform:1.8
+    image: hashicorp/terraform:1.2.7
     volumes:
       - .:/infra
     working_dir: /infra
@@ -12,16 +12,16 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
     entrypoint: /bin/sh
 
-  # tfsec:
-  #   image: tfsec/tfsec:v0.58.6
-  #   volumes:
-  #     - .:/infra
-  #   working_dir: /infra
-  #   entrypoint: /bin/sh
+  tfsec:
+    image: tfsec/tfsec:v0.58.6
+    volumes:
+      - .:/infra
+    working_dir: /infra
+    entrypoint: /bin/sh
 
-  # tfdocs:
-  #   image: cytopia/terraform-docs:latest
-  #   volumes:
-  #     - .:/infra
-  #   working_dir: /infra
-  #   entrypoint: /bin/sh
+  tfdocs:
+    image: cytopia/terraform-docs:latest
+    volumes:
+      - .:/infra
+    working_dir: /infra
+    entrypoint: /bin/sh
