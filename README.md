@@ -9,7 +9,7 @@ This repository contains the configuration and scripts for managing infrastructu
 Before you start, ensure you have the following installed and configured:
 
 1. **AWS User Credentials**  
-   - You need AWS access and secret keys with sufficient permissions to manage infrastructure.
+   - You need AWS access and secret keys with admin access to manage infrastructure.
    - Configure your credentials using the AWS CLI:
      ```bash
      aws configure

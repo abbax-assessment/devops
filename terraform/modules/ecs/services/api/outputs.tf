@@ -34,7 +34,7 @@ output "ecs_service_name" {
 }
 
 output "ecs_service_arn" {
-  value = aws_ecs_service.this.arn
+  value = aws_ecs_service.this.id
 }
 
 output "api_app_port" {

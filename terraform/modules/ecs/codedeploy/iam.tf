@@ -32,9 +32,10 @@ data "aws_iam_policy_document" "codedeploy" {
     ]
 
     resources = [
-      var.ecs_service_arn,
-      var.ecs_task_arn,
-      var.alb_arn
+      "*"
+      # var.ecs_service_arn,
+      # var.ecs_task_arn,
+      # var.alb_arn
     ]
   }
   statement {
@@ -62,10 +63,11 @@ data "aws_iam_policy_document" "codedeploy" {
     ]
 
     resources = [
-      var.ecs_service_arn,
-      aws_codedeploy_deployment_group.this.arn,
-      "arn:aws:codedeploy:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:deploymentconfig:*}",
-      aws_codedeploy_app.this.arn
+      "*",
+      # var.ecs_service_arn,
+      # aws_codedeploy_deployment_group.this.arn,
+      # "arn:aws:codedeploy:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:deploymentconfig:*}",
+      # aws_codedeploy_app.this.arn
     ]
   }
 

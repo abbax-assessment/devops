@@ -32,6 +32,11 @@ module "github" {
         { name : "TASK_RUNNER_ECR_NAME", value : module.service_task_runner.ecr_repo_name },
         { name : "ECS_SERVICE_TASK_RUNNER_NAME", value : module.service_task_runner.ecs_service_name }
       ]
+    },
+    {
+      path = "devops",
+      environment : "terraform-${terraform.workspace}"
+      variables : []
     }
   ]
 
