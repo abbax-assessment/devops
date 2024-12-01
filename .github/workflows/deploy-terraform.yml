@@ -130,4 +130,4 @@ jobs:
 
       - name: terraform apply
         working-directory: terraform
-        run: terraform apply -var-file=./variables/${{ github.ref_name }}.tfvars -auto-approve
+        run: terraform apply -var-file=./terraform/variables/${{ github.ref_name }}.tfvars -auto-approve
