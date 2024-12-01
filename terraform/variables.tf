@@ -55,4 +55,15 @@ variable "slack_webhook_url" {
 
 variable "github_token" {
   type = string
+  default = null
+}
+
+variable "grafana_auth" {
+  type = string  
+  default = null
+}
+
+variable "grafana_url" {
+  type = string  
+  default = null
 }

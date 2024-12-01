@@ -2,7 +2,6 @@ data "aws_region" "current" {}
 
 locals {
   service_prefix    = "${var.prefix}-${var.app_name}"
-  initial_image_uri = "scratch"
   ecr_repo_name     = "${local.service_prefix}-ecr"
 }
 
@@ -43,8 +42,8 @@ module "deploy" {
   ecs_cluster_name = var.ecs_cluster_name
   ecs_service_name = aws_ecs_service.this.name
   ecs_service_id   = aws_ecs_service.this.id
-  ecs_service_arn = aws_ecs_service.this.id
-  ecs_task_arn = aws_ecs_task_definition.this.arn
+  ecs_service_arn  = aws_ecs_service.this.id
+  ecs_task_arn     = aws_ecs_task_definition.this.arn
 
   tags = var.tags
 }

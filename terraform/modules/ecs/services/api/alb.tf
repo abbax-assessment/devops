@@ -12,7 +12,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_vpc_security_group_ingress_rule" "public_access" {
   security_group_id = aws_security_group.alb.id
-  description = "Allow public access"
+  description       = "Allow public access"
 
   cidr_ipv4   = "0.0.0.0/0"
   from_port   = 80
@@ -22,7 +22,7 @@ resource "aws_vpc_security_group_ingress_rule" "public_access" {
 
 resource "aws_vpc_security_group_egress_rule" "service_access" {
   security_group_id = aws_security_group.alb.id
-  description = "Allow access from api ecs service"
+  description       = "Allow access from api ecs service"
 
   referenced_security_group_id = aws_security_group.service.id
   from_port                    = var.port

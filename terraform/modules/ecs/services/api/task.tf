@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name   = var.app_name,
-      image  = local.initial_image_uri,
+      image  = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-stage-api-ecr:1253832-1733025412",
       cpu    = var.task_definition.app.cpu,
       memory = var.task_definition.app.memory,
       environment = [
@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "this" {
       healthCheck : {
         command : [
           "CMD-SHELL",
-          "curl -f http://localhost:${var.port}/health-check || exit 1"
+          "wget -q --spider http://localhost:${var.port}/health-check || exit 1"
         ],
         interval : 5,
         timeout : 2,
@@ -76,9 +76,9 @@ resource "aws_ecs_task_definition" "this" {
     aws_iam_role.task_exec_role
   ]
 
-  lifecycle {
-    ignore_changes = [container_definitions]
-  }
+  # lifecycle {
+  #   ignore_changes = [container_definitions]
+  # }
 }
 
 resource "aws_ecs_service" "this" {
@@ -132,7 +132,7 @@ resource "aws_security_group" "service" {
 
 resource "aws_vpc_security_group_ingress_rule" "service" {
   security_group_id = aws_security_group.service.id
-  description = "Allow inbound access to the ALB"
+  description       = "Allow inbound access to the ALB"
 
   referenced_security_group_id = aws_security_group.alb.id
   from_port                    = var.port
@@ -142,7 +142,7 @@ resource "aws_vpc_security_group_ingress_rule" "service" {
 
 resource "aws_vpc_security_group_egress_rule" "lb_egress" {
   security_group_id = aws_security_group.service.id
-  description = "Allow outbound access to the ALB"
+  description       = "Allow outbound access to the ALB"
 
   referenced_security_group_id = aws_security_group.alb.id
   from_port                    = var.port
@@ -153,7 +153,7 @@ resource "aws_vpc_security_group_egress_rule" "lb_egress" {
 
 resource "aws_vpc_security_group_egress_rule" "private_egress" {
   security_group_id = aws_security_group.service.id
-  description = "Allow access to the internet"
+  description       = "Allow access to the internet"
 
   cidr_ipv4   = "0.0.0.0/0"
   ip_protocol = "-1"
