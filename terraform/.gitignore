@@ -13,5 +13,8 @@ override.tf.json
 *.zip
 
 *.local.js
-*.tfvars
+.auto.tfvars
+!dev.tfvars
+!stage.tfvars
+!production.tfvars
 terraform.exe

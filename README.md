@@ -68,6 +68,7 @@ To ensure secure and automated operations, you need to configure the following r
    - `ORG_TOKEN` (org secret)
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
+   - `TF_VAR_GITHUB_TOKEN` <- Add this at the devops repo (same value as ORG_TOKEN)
 
 ---
 

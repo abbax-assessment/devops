@@ -53,6 +53,6 @@ variable "slack_webhook_url" {
   default = null
 }
 
-variable "github_token" {
+variable "GITHUB_TOKEN" {
   type = string
 }

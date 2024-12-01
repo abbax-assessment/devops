@@ -1,7 +1,7 @@
 module "github" {
   source       = "./modules/github"
   prefix       = local.prefix
-  github_token = var.github_token
+  github_token = var.GITHUB_TOKEN
 
   repos = [
     {
@@ -40,5 +40,6 @@ module "github" {
     }
   ]
 
+ 
   tags = local.common_tags
 }
