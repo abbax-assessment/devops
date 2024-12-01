@@ -1,7 +1,7 @@
 module "github" {
   source       = "./modules/github"
   prefix       = local.prefix
-  github_token = var.GITHUB_TOKEN
+  github_token = var.github_token
 
   repos = [
     {
