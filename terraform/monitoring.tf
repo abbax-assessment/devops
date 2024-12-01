@@ -1,24 +1,30 @@
-resource "null_resource" "grafana_dashboards" {
-  count = var.grafana_auth != null && var.grafana_url != null ? 1 : 0
-
-  triggers = {
-    grafana_auth = var.grafana_auth
-    grafana_url  = var.grafana_url
-  }
-
-  depends_on = []
+module "sns_slack_topic" {
+  count             = var.notifications_channel_slack_webhook != null ? 1 : 0
+  source            = "./modules/sns"
+  prefix            = local.prefix
+  tags              = local.common_tags
+  slack_webhook_url = var.notifications_channel_slack_webhook
 }
 
-resource "null_resource" "trigger_grafana_dashboards" {
-  count = var.grafana_auth != null && var.grafana_url != null ? 1 : 0
-
-  depends_on = [module.grafana_dashboards]
-}
-
-module "grafana_dashboards" {
+module "grafana" {
     source = "./modules/grafana"
 
-    grafana_auth = var.grafana_auth
-    grafana_url = var.grafana_url
+    prefix = local.prefix
+    vpc_id = module.network.vpc_id
+    vpc_subnets = module.network.private_subnets[*].id
+    github_token = var.github_token
+
+    api_logs_arn = module.service_api.logs_arn
+    api_logs_name = module.service_api.logs_name
+    api_svc_name = module.service_api.ecs_service_name
+
+    task_runner_logs_arn = module.service_task_runner.logs_arn
+    task_runner_logs_name = module.service_task_runner.logs_name
+    task_runner_svc_name = module.service_task_runner.ecs_service_name
+
+    sqs_tasks_name = module.tasks_sqs_queue.queue_name 
+    alb_arn_suffix = module.service_api.alb_arn_suffix
+
+    tags = local.common_tags
 }
 

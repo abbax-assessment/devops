@@ -40,3 +40,15 @@ output "ecs_service_arn" {
 output "api_app_port" {
   value = var.port
 }
+
+output "logs_arn" {
+  value = aws_cloudwatch_log_group.this.arn
+}
+
+output "logs_name" {
+  value = aws_cloudwatch_log_group.this.name
+}
+
+output "alb_arn_suffix" {
+  value = aws_alb.this.arn_suffix
+}

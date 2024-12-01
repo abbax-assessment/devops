@@ -2,7 +2,6 @@ data "aws_region" "current" {}
 
 locals {
   service_prefix    = "${var.prefix}-${var.app_name}"
-  initial_image_uri = "scratch"
   ecr_repo_name     = "${local.service_prefix}-ecr"
 }
 

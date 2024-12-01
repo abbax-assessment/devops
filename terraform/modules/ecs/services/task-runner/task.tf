@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name   = var.app_name,
-      image  = local.initial_image_uri,
+      image  = "nginx",
       cpu    = var.task_definition.app.cpu,
       memory = var.task_definition.app.memory,
       environment = [
@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "this" {
       healthCheck : {
         command : [
           "CMD-SHELL",
-          "node ./utils/health-check/index.js"
+          "which nginx || node ./utils/health-check/index.js"
         ],
         interval : 15,
         timeout : 5,
