@@ -44,6 +44,10 @@ variable "prefix" {
   type = string
 }
 
+variable "domain_name" {
+  type = string
+}
+
 variable "notifications_channel_slack_webhook" {
   type = string
 }
@@ -54,5 +58,6 @@ variable "slack_webhook_url" {
 }
 
 variable "github_token" {
-  type = string  
+  type    = string
+  default = null
 }

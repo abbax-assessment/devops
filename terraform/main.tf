@@ -6,23 +6,6 @@ locals {
   }
 }
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "5.76.0"
-    }
-  }
-
-  backend "s3" {
-    bucket         = "tsk-terraform-state-bucket"
-    key            = "aws.tfstate"
-    region         = "eu-west-1"
-    dynamodb_table = "terraform-lock-table"
-    encrypt        = true
-  }
-}
-
 
 module "network" {
   source = "./modules/network"
@@ -30,11 +13,40 @@ module "network" {
   tags   = local.common_tags
 }
 
+module "certificates" {
+  source = "./modules/acm"
 
-module "sns_slack_topic" {
-  count             = var.notifications_channel_slack_webhook != null ? 1 : 0
-  source            = "./modules/sns"
-  prefix            = local.prefix
-  tags              = local.common_tags
-  slack_webhook_url = var.notifications_channel_slack_webhook
+  domain_name = var.domain_name
+
+  providers = {
+    aws.eu_west_region = aws
+    aws.us_east_region = aws.us_east_region
+  }
+}
+
+module "dns" {
+  source = "./modules/dns"
+
+  domain_name = var.domain_name
+  prefix      = local.prefix
+
+  records = [
+    {
+      name        = "${local.prefix}-grafana-workspace"
+      dns_name    = "${terraform.workspace}.grafana.${var.domain_name}"
+      hosted_zone = "public"
+      records     = ["https://${module.aws_grafana.grafana_workspace_url}"]
+      type        = "CNAME"
+    },
+    {
+      name        = "${local.prefix}-cloudfront"
+      dns_name    = module.cloudfront.aliases[0]
+      hosted_zone = "public"
+      type        = "A"
+      alias_name = module.cloudfront.cloudfront_distribution_domain
+      alias_zone = module.cloudfront.cloudfront_distribution_zone_id
+    }
+  ]
+
+  tags = local.common_tags
 }

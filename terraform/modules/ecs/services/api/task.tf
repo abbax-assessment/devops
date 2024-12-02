@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name   = var.app_name,
-      image  = local.initial_image_uri,
+      image  = "ealen/echo-server", # placerholder image
       cpu    = var.task_definition.app.cpu,
       memory = var.task_definition.app.memory,
       environment = [
@@ -32,6 +32,16 @@ resource "aws_ecs_task_definition" "this" {
           protocol : "tcp"
         }
       ]
+      healthCheck : {
+        command : [
+          "CMD-SHELL",
+          "wget -q --spider http://localhost:${var.port}/health-check || exit 1"
+        ],
+        interval : 5,
+        timeout : 2,
+        retries : 2,
+        startPeriod : 5
+      }
     },
     {
       name      = "xray-sidecar",
@@ -122,6 +132,7 @@ resource "aws_security_group" "service" {
 
 resource "aws_vpc_security_group_ingress_rule" "service" {
   security_group_id = aws_security_group.service.id
+  description       = "Allow inbound access to the ALB"
 
   referenced_security_group_id = aws_security_group.alb.id
   from_port                    = var.port
@@ -131,6 +142,7 @@ resource "aws_vpc_security_group_ingress_rule" "service" {
 
 resource "aws_vpc_security_group_egress_rule" "lb_egress" {
   security_group_id = aws_security_group.service.id
+  description       = "Allow outbound access to the ALB"
 
   referenced_security_group_id = aws_security_group.alb.id
   from_port                    = var.port
@@ -139,21 +151,10 @@ resource "aws_vpc_security_group_egress_rule" "lb_egress" {
 }
 
 
-# TODO thelei all traffic
-resource "aws_vpc_security_group_egress_rule" "private_egress2" {
-  security_group_id = aws_security_group.service.id
-
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 0
-  to_port     = 0
-  ip_protocol = "tcp"
-}
-
 resource "aws_vpc_security_group_egress_rule" "private_egress" {
   security_group_id = aws_security_group.service.id
+  description       = "Allow access to the internet"
 
   cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 0
-  to_port     = 0
-  ip_protocol = "udp"
+  ip_protocol = "-1"
 }

@@ -5,7 +5,7 @@ resource "aws_sns_topic" "this" {
 
 resource "aws_sns_topic_subscription" "this" {
   topic_arn              = aws_sns_topic.this.arn
-  endpoint_auto_confirms = true
+  endpoint_auto_confirms = false
 
   protocol = "https"
   endpoint = var.slack_webhook_url
