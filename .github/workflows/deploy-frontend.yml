@@ -36,9 +36,11 @@ jobs:
           repository: ${{ vars.FRONTEND_REPO }}
           name: ${{ github.event.inputs.artifact-name }}
           run-id: ${{ github.event.inputs.workflow-run-id }}
+          path: ./build
 
       - name: Put to S3
         run: |
+          echo ls -la
           aws s3 sync ./build ${{ vars.S3_FRONTEND_URL }}
 
       - name: Invalidate Cloudfront
