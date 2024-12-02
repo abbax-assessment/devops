@@ -24,7 +24,7 @@ resource "null_resource" "execute_init_query" {
   count = length(local.queries) - 1
 
   provisioner "local-exec" {
-    command     = <<EOT
+    command = <<EOT
       aws athena start-query-execution --work-group ${aws_athena_workgroup.this.name} --query-string "${replace(local.queries[count.index], "\n", "")}"
     EOT
   }

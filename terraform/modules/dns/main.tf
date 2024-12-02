@@ -21,7 +21,7 @@ resource "aws_route53_record" "c_name_records" {
   zone_id  = data.aws_route53_zone.public_zone.id
   name     = each.value.dns_name
   records  = each.value.records
-  ttl = 300
+  ttl      = 300
   type     = each.value.type
 }
 
