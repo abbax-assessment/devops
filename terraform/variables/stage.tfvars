@@ -39,5 +39,4 @@ ecs_service_task_runner_task_definition = {
 }
 
 notifications_channel_slack_webhook = "https://hooks.slack.com/triggers/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"
-grafana_auth                        = ""
-grafana_url                         = "https://g-ea3de71a13.grafana-workspace.eu-west-1.amazonaws.com/"
+domain_name = "deveros.click"

@@ -70,30 +70,34 @@ Follow these steps to initialize the Terraform backend:
 To ensure secure and automated operations, you need to configure the following repository secrets in your GitHub repository. These secrets are required for CI/CD pipelines and infrastructure management.
 
 ### Required Secrets
+Set the required secrets, variables to the organization and DevOps repo
 
-1. **SNYK_TOKEN**  
+1. **SNYK_TOKEN**  (secret)
    - A token for [Snyk](https://snyk.io/) to enable vulnerability scanning and reporting.
    - Obtain the token from your Snyk account and add it to the repository secrets.
 
-2. **ORG_TOKEN**  
+2. **ORG_TOKEN**  (secret)
    - A GitHub fine-grained personal access token with administrative rights on the repository.
    - You can create this token via the GitHub Developer Settings:
      - Go to **Settings > Developer settings > Personal access tokens > Fine-grained tokens**.
      - Grant the token access to the repository with the necessary scopes.
 
-3. **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY**  
+3. **AWS_ACCESS_KEY_ID** and **AWS_SECRET_ACCESS_KEY**  (secret)
    - Credentials for an AWS user with sufficient permissions to manage resources.
    - Configure an AWS IAM user with programmatic access and the required permissions.
+4. **AWS_DEFAULT_REGION**  (variable)
+   - Default AWS Region.
 
-### Setting Secrets in GitHub
+### Setting Secrets/Variables in GitHub
 
 1. Navigate to your repository on GitHub.
-2. Go to **Settings > Secrets and variables > Actions > New repository secret**.
+2. Go to **Settings > Secrets and variables > Actions > New repository secret/variable**.
 3. Add each of the following secrets:
    - `SNYK_TOKEN` (org secret)
    - `ORG_TOKEN` (org secret)
-   - `AWS_ACCESS_KEY_ID`
-   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_ACCESS_KEY_ID` (devops secret)
+   - `AWS_SECRET_ACCESS_KEY`(devops secret)
+   - `AWS_DEFAULT_REGION`(devops variable)
 
 ---
 ### DNS Name and Certificate setup
@@ -111,6 +115,7 @@ You can setup as many environments as you want simply by creating a new terrafor
 ```
 terraform init
 terraform workspace create dev
+# create {workspace}.tfvars file at ./variables
 terraform apply -var-file=./variables/dev.tfvars
 ```
 After creating the resources you can go to your AWS console at Load Balancer section and visit `/` to fetch the frontend as forward some workload to the workers.

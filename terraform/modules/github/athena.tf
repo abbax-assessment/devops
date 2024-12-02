@@ -27,6 +27,5 @@ resource "null_resource" "execute_init_query" {
     command     = <<EOT
       aws athena start-query-execution --work-group ${aws_athena_workgroup.this.name} --query-string "${replace(local.queries[count.index], "\n", "")}"
     EOT
-    interpreter = ["PowerShell", "-Command"]
   }
 }
