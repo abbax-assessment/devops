@@ -168,3 +168,12 @@ It's visible from the costs explorer that the most expensive service is the EC2 
 - If yes, then switching to a serverless solution like AWS Lambda can be a cheaper alternative. It will significantly reduce the `idle` time and can be scaled up to a decent amount. A downside of Lambda functions are `cold-starts` during spikes which can affect user performance.
 3. Do I expect to have normal traffic but big sudden spikes?
 - If yes, a hybrid solution can be implemented. EC2 spot instances can be used for the daily normal traffic and scale up when needed by adding more EC2 instances, ECS Fargates tasks or AWS Lambda depending on the workload.
+
+## Test Live Environment
+The `dev` environment is live. You can navigate to the website to add tasks and then process to the grafana dashboard to monitor metrics, logs, scaling
+
+- Website: https://dev.deveros.click
+- Grafana:
+   - URL: https://d-9367b65f82.awsapps.com/start
+   - Username: dashboard-viewer
+   - Password: 654765476547654!Ayfdg

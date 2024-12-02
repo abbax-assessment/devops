@@ -4,6 +4,14 @@ module "ecs" {
   tags   = local.common_tags
 }
 
+module "tasks_dynamodb_table" {
+  source = "./modules/dynamodb"
+
+  prefix     = local.prefix
+  table_name = "tasks"
+  tags       = local.common_tags
+}
+
 module "tasks_sqs_queue" {
   source = "./modules/sqs"
 
@@ -30,6 +38,8 @@ module "service_api" {
   public_subnets              = module.network.public_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
   certificate_arn             = module.certificates.eu_west_region_arn
+  tasks_dynamodb_table_arn    = module.tasks_dynamodb_table.table_arn
+  tasks_dynamodb_table_name   = module.tasks_dynamodb_table.table_name
 
   ecs_cluster_id     = module.ecs.ecs_cluster_id
   ecs_cluster_name   = module.ecs.ecs_cluster_name
@@ -46,6 +56,8 @@ module "service_task_runner" {
   vpc_id                      = module.network.vpc_id
   private_subnets             = module.network.private_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
+  tasks_dynamodb_table_arn    = module.tasks_dynamodb_table.table_arn
+  tasks_dynamodb_table_name   = module.tasks_dynamodb_table.table_name
 
   ecs_cluster_id             = module.ecs.ecs_cluster_id
   ecs_cluster_name           = module.ecs.ecs_cluster_name
