@@ -13,6 +13,7 @@ resource "aws_ecs_task_definition" "this" {
       memory = var.task_definition.app.memory,
       environment = [
         { name : "TASKS_QUEUE_URL", value : var.task_queue_sqs_url },
+        { name : "TASKS_DYNAMODB_TABLE", value : var.tasks_dynamodb_table_name },
         { name : "ENVIRONMENT", value : terraform.workspace },
       ]
       essential = true,
@@ -68,10 +69,6 @@ resource "aws_ecs_task_definition" "this" {
     aws_iam_role.task_role,
     aws_iam_role.task_exec_role
   ]
-
-  lifecycle {
-    ignore_changes = [container_definitions]
-  }
 }
 
 resource "aws_ecs_service" "this" {

@@ -63,3 +63,11 @@ variable "autoscale_alert_sns_topics" {
 variable "tags" {
   type = map(any)
 }
+
+variable "tasks_dynamodb_table_arn" {
+  type = string
+}
+
+variable "tasks_dynamodb_table_name" {
+  type = string
+}
