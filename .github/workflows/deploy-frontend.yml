@@ -1,4 +1,4 @@
-name: deploy:api
+name: deploy:frontend
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ on:
 jobs:  
   deploy-revision:  
     runs-on: ubuntu-latest
-    environment: 'api-${{ github.event.inputs.environment }}'
+    environment: 'frontend-${{ github.event.inputs.environment }}'
     steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
