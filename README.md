@@ -24,11 +24,17 @@ Each repository has it's own Workflow CI file. The deployment process is being h
 ## Architecture
 The project structure is divided into 3 main sections. 
 1. AWS Infrastructure.
+
 ![alt text](icons/image-1.png)
+
 2. Github Environments
+
 ![alt text](icons/image-2.png)
+
 3. Monitoring
+
 ![alt text](icons/image-3.png)
+
 
 ## Prerequisites
 
@@ -102,6 +108,7 @@ Set the required secrets, variables to the organization and DevOps repo
 ---
 ### DNS Name and Certificate setup
 The project by default requires a domain name to enforce HTTPS. You will need to register your domain at [aws console](https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=eu-west-1)
+
 ![alt text](icons/image-13.png)
 
 Create and validate your certificates your default region and `us-east-1` at [aws console](https://eu-west-1.console.aws.amazon.com/acm/home?region=eu-west-1#/welcome)
@@ -125,6 +132,7 @@ After creating the resources you can go to your AWS console at Load Balancer sec
 Next, you may access the AWS Grafana dashboard that was created on your AWS console to get insights about the app status and DevOps metrics.
 
 ![alt text](icons/image-5.png)
+
 ![alt text](icons/image-6.png)
 
 After finishing up you can tear down the infrastructure by running

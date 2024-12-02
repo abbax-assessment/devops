@@ -8,7 +8,7 @@ variable "domain_name" {
 
 variable "records" {
   default = []
-  type = any
+  type    = any
 }
 
 variable "tags" {

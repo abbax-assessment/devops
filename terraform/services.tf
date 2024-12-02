@@ -29,8 +29,8 @@ module "service_api" {
   private_subnets             = module.network.private_subnets[*].id
   public_subnets              = module.network.public_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
-  certificate_arn = module.certificates.eu_west_region_arn
-  
+  certificate_arn             = module.certificates.eu_west_region_arn
+
   ecs_cluster_id     = module.ecs.ecs_cluster_id
   ecs_cluster_name   = module.ecs.ecs_cluster_name
   task_definition    = var.ecs_service_api_task_definition

@@ -131,7 +131,7 @@ jobs:
 
       - name: terraform workspace select
         working-directory: terraform
-        run: terraform workspace select ${{ github.ref_name }}
+        run: terraform workspace select ${{ github.ref_name }} || terraform workspace create ${{ github.ref_name }}
 
       - name: terraform apply
         working-directory: terraform
