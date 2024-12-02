@@ -68,7 +68,8 @@ data "aws_iam_policy_document" "task_policy" {
       "dynamodb:UpdateItem",
       "dynamodb:DeleteItem",
       "dynamodb:Query",
-      "dynamodb:PartiQLSelect"
+      "dynamodb:PartiQLSelect",
+      "dynamodb:Scan"
     ]
     resources = [
       var.tasks_dynamodb_table_arn, "${var.tasks_dynamodb_table_arn}/*",
