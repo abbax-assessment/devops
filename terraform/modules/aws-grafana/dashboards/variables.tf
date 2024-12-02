@@ -1,21 +1,13 @@
 variable "prefix" {
-  type = string  
-}
-
-variable "vpc_subnets" {
-  type = list(string)  
-}
-
-variable "vpc_id" {
   type = string
 }
 
 variable "github_token" {
-  type = string  
+  type = string
 }
 
 variable "tags" {
-  type = map(any)  
+  type = map(any)
 }
 
 variable "task_runner_logs_arn" {
@@ -47,5 +39,16 @@ variable "sqs_tasks_name" {
 }
 
 variable "alb_arn_suffix" {
-  type = string  
+  type = string
 }
+
+variable "grafana_workspace_url" {
+  type = string
+}
+
+
+variable "grafana_service_token" {
+  type = string
+}
+
+

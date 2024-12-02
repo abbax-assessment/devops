@@ -1,7 +1,7 @@
 
 
 resource "aws_grafana_workspace" "this" {
-  name = "${var.prefix}-grafana-workspace"
+  name                     = "${var.prefix}-grafana-workspace"
   account_access_type      = "CURRENT_ACCOUNT"
   authentication_providers = ["AWS_SSO"]
   permission_type          = "SERVICE_MANAGED"
@@ -30,7 +30,7 @@ resource "aws_grafana_workspace" "this" {
   grafana_version = "10.4"
   vpc_configuration {
     security_group_ids = [aws_security_group.this.id]
-    subnet_ids = var.vpc_subnets
+    subnet_ids         = var.vpc_subnets
   }
   tags = var.tags
 }
@@ -51,7 +51,7 @@ resource "aws_grafana_workspace_service_account_token" "this" {
   seconds_to_live    = 2592000
   workspace_id       = aws_grafana_workspace.this.id
 
-  depends_on = [ time_rotating.this ]
+  depends_on = [time_rotating.this]
 }
 
 

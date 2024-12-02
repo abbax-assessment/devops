@@ -52,3 +52,7 @@ output "logs_name" {
 output "alb_arn_suffix" {
   value = aws_alb.this.arn_suffix
 }
+
+output "alb_domain_name" {
+  value = aws_alb.this.dns_name
+}

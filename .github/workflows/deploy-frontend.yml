@@ -1,0 +1,46 @@
+name: deploy:api
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflow-run-id:
+        description: 'The upstream workflow run id'
+        required: true
+      tag:
+        description: 'The upstream workflow short-sha'
+        required: true
+      artifact-name:
+        description: 'The artifact name to deploy'
+        required: true
+      environment:
+        description: 'The environment to deploy'
+        required: true
+        
+jobs:  
+  deploy-revision:  
+    runs-on: ubuntu-latest
+    environment: 'api-${{ github.event.inputs.environment }}'
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        id: download-artifact
+        with:
+          github-token: ${{ secrets.ORG_TOKEN }}
+          repository: ${{ vars.FRONTEND_REPO }}
+          name: ${{ github.event.inputs.artifact-name }}
+          run-id: ${{ github.event.inputs.workflow-run-id }}
+
+      - name: Put to S3
+        run: |
+          aws s3 sync ./build ${{ vars.S3_FRONTEND_URL }}
+
+      - name: Invalidate Cloudfront
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
