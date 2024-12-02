@@ -21,7 +21,6 @@ module "github" {
         { name : "IMAGE_REGISTRY_URL", value : module.service_api.registry_url },
         { name : "IMAGE_REGISTRY_URL_API", value : module.service_api.ecr_url },
         { name : "TASK_DEF_FAMILY_API", value : module.service_api.task_family_name }
-        { name : "TASK_DEF_FAMILY_API", value : module.service_api.task_family_name }
 
       ]
     },
@@ -44,7 +43,7 @@ module "github" {
       variables : [
         { name : "FRONTEND_REPO", value : "eros-assessment/frontend" },
         { name : "S3_FRONTEND_URL", value : module.frontend_app.s3_bucket_domain },
-        { name : "CLOUDFRONT_DISTRIBUTION_ID", value : module.cloudfront.cloudfront_distribution_id },
+        { name : "CLOUDFRONT_DISTRIBUTION_ID", value : module.cloudfront.cloudfront_distribution_id }
       ]
     }
   ]
