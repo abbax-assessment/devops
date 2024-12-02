@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name   = var.app_name,
-      image  = "569985934894.dkr.ecr.eu-west-1.amazonaws.com/tsk-stage-api-ecr:1253832-1733025412",
+      image  = "ealen/echo-server", # placerholder image
       cpu    = var.task_definition.app.cpu,
       memory = var.task_definition.app.memory,
       environment = [
@@ -76,9 +76,9 @@ resource "aws_ecs_task_definition" "this" {
     aws_iam_role.task_exec_role
   ]
 
-  # lifecycle {
-  #   ignore_changes = [container_definitions]
-  # }
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
 }
 
 resource "aws_ecs_service" "this" {

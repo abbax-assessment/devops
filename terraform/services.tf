@@ -29,7 +29,8 @@ module "service_api" {
   private_subnets             = module.network.private_subnets[*].id
   public_subnets              = module.network.public_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
-
+  certificate_arn = module.certificates.eu_west_region_arn
+  
   ecs_cluster_id     = module.ecs.ecs_cluster_id
   ecs_cluster_name   = module.ecs.ecs_cluster_name
   task_definition    = var.ecs_service_api_task_definition
@@ -50,7 +51,28 @@ module "service_task_runner" {
   ecs_cluster_name           = module.ecs.ecs_cluster_name
   task_definition            = var.ecs_service_task_runner_task_definition
   task_queue_sqs_url         = module.tasks_sqs_queue.queue_url
-  autoscale_alert_sns_topics = [module.sns_slack_topic[0].sns_topic_arn] # TODO
+  autoscale_alert_sns_topics = [module.sns_slack_topic[0].sns_topic_arn]
+
+  tags = local.common_tags
+}
+
+module "frontend_app" {
+  source = "./modules/frontend"
+
+  prefix = local.prefix
+  tags   = local.common_tags
+}
+
+module "cloudfront" {
+  source = "./modules/cloudfront"
+
+  prefix                    = local.prefix
+  alb_domain_name           = module.service_api.alb_domain_name
+  dns_prefix                = "${terraform.workspace}.${var.domain_name}"
+  certificate_arn           = module.certificates.us_east_region_arn
+  frontend_s3_bucket_arn    = module.frontend_app.s3_bucket_arn
+  frontend_s3_bucket_id     = module.frontend_app.s3_bucket_id
+  frontend_s3_bucket_domain = module.frontend_app.s3_bucket_domain
 
   tags = local.common_tags
 }

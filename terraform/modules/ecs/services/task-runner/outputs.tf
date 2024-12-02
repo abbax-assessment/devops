@@ -17,3 +17,11 @@ output "task_family_name" {
 output "ecs_service_name" {
   value = aws_ecs_service.this.name
 }
+
+output "logs_arn" {
+  value = aws_cloudwatch_log_group.this.arn
+}
+
+output "logs_name" {
+  value = aws_cloudwatch_log_group.this.name
+}

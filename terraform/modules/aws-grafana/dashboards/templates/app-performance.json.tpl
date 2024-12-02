@@ -36,8 +36,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -115,11 +115,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "id": "",
@@ -139,11 +139,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "hide": false,
@@ -164,11 +164,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "hide": false,
@@ -193,8 +193,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -241,11 +241,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "id": "",
@@ -265,11 +265,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "hide": false,
@@ -290,11 +290,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "hide": false,
@@ -319,8 +319,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "description": "",
         "fieldConfig": {
@@ -399,11 +399,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "QueueName": "tsk-${environment}-tasks"
+                "QueueName": "${sqs_tasks_name}"
             },
             "expression": "",
             "id": "",
@@ -423,11 +423,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "QueueName": "tsk-${environment}-tasks"
+                "QueueName": "${sqs_tasks_name}"
             },
             "expression": "",
             "hide": false,
@@ -448,11 +448,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "QueueName": "tsk-${environment}-tasks-dead-letter-queue"
+                "QueueName": "${sqs_tasks_name}-dead-letter-queue"
             },
             "expression": "",
             "hide": false,
@@ -473,11 +473,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "QueueName": "tsk-${environment}-tasks-dead-letter-queue"
+                "QueueName": "${sqs_tasks_name}-dead-letter-queue"
             },
             "expression": "",
             "hide": false,
@@ -502,8 +502,8 @@
         },
         {
         "datasource": {
-            "type": "grafana-x-ray-datasource",
-            "uid": "ee5f6qbuqrn5sc"
+            "type": "${xray_data_source_type}",
+            "uid": "${xray_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -549,11 +549,11 @@
             {
             "columns": [],
             "datasource": {
-                "type": "grafana-x-ray-datasource",
-                "uid": "ee5f6qbuqrn5sc"
+                "type": "${xray_data_source_type}",
+                "uid": "${xray_data_source_id}"
             },
             "group": {
-                "GroupARN": "arn:aws:xray:eu-west-1:569985934894:group/Default",
+                "GroupARN": "arn:aws:xray:eu-west-1:${account_id}:group/Default",
                 "GroupName": "Default",
                 "InsightsConfiguration": {
                 "InsightsEnabled": false,
@@ -571,8 +571,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -651,11 +651,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -675,11 +675,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -704,8 +704,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -754,12 +754,12 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
                 "AvailabilityZone": "eu-west-1a",
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "id": "",
@@ -779,12 +779,12 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
                 "AvailabilityZone": "eu-west-1b",
-                "LoadBalancer": "app/tsk-${environment}-api-alb/cb5b2b63d5201880"
+                "LoadBalancer": "${alb_arn_suffix}"
             },
             "expression": "",
             "hide": false,
@@ -809,8 +809,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -859,8 +859,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "",
@@ -897,8 +897,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -978,11 +978,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -1002,11 +1002,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -1044,8 +1044,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "gridPos": {
             "h": 8,
@@ -1067,8 +1067,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields message, @message\n| filter @message like /\\{./",
@@ -1076,9 +1076,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-task-runner-logs:*",
-                "name": "tsk-${environment}-task-runner-logs"
+                "accountId": "${account_id}",
+                "arn": "${task_runner_logs_arn}:*",
+                "name": "${task_runner_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1100,8 +1100,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "gridPos": {
             "h": 8,
@@ -1123,8 +1123,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields message, @message |\n filter @message like /^\\{/ |\n filter level = 'error'",
@@ -1132,9 +1132,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-task-runner-logs:*",
-                "name": "tsk-${environment}-task-runner-logs"
+                "accountId": "${account_id}",
+                "arn": "${task_runner_logs_arn}:*",
+                "name": "${task_runner_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1156,8 +1156,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1238,8 +1238,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields message, @message\n| filter level = 'error'\n| stats count() as error_count by error, bin(5m)",
@@ -1247,9 +1247,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-task-runner-logs:*",
-                "name": "tsk-${environment}-task-runner-logs"
+                "accountId": "${account_id}",
+                "arn": "${task_runner_logs_arn}:*",
+                "name": "${task_runner_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1274,8 +1274,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1352,11 +1352,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -1376,11 +1376,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -1405,8 +1405,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1483,11 +1483,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -1507,11 +1507,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-task-runner-svc"
+                "ServiceName": "${task_runner_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -1549,8 +1549,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "gridPos": {
             "h": 8,
@@ -1572,8 +1572,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields @timestamp, message \n| filter @message like /\\{./",
@@ -1581,9 +1581,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-api-logs:*",
-                "name": "tsk-${environment}-api-logs"
+                "accountId": "${account_id}",
+                "arn": "${api_logs_arn}:*",
+                "name": "${api_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1605,8 +1605,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "gridPos": {
             "h": 8,
@@ -1628,8 +1628,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields @timestamp, message |\n filter @message like /^\\{/ |\n filter level = 'error'",
@@ -1637,9 +1637,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-api-logs:*",
-                "name": "tsk-${environment}-api-logs"
+                "accountId": "${account_id}",
+                "arn": "${api_logs_arn}:*",
+                "name": "${api_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1661,8 +1661,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1742,8 +1742,8 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {},
             "expression": "fields @timestamp, @message, error\n| filter level = 'error'\n| stats count() as error_count by error, bin(5m)",
@@ -1751,9 +1751,9 @@
             "label": "",
             "logGroups": [
                 {
-                "accountId": "569985934894",
-                "arn": "arn:aws:logs:eu-west-1:569985934894:log-group:tsk-${environment}-api-logs:*",
-                "name": "tsk-${environment}-api-logs"
+                "accountId": "${account_id}",
+                "arn": "${api_logs_arn}:*",
+                "name": "${api_logs_name}"
                 }
             ],
             "matchExact": true,
@@ -1778,8 +1778,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1856,11 +1856,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -1880,11 +1880,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -1909,8 +1909,8 @@
         },
         {
         "datasource": {
-            "type": "cloudwatch",
-            "uid": "ae5f4zx8ilukga"
+            "type": "${cloudwatch_data_source_type}",
+            "uid": "${cloudwatch_data_source_id}"
         },
         "fieldConfig": {
             "defaults": {
@@ -1987,11 +1987,11 @@
         "targets": [
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "id": "",
@@ -2011,11 +2011,11 @@
             },
             {
             "datasource": {
-                "type": "cloudwatch",
-                "uid": "ae5f4zx8ilukga"
+                "type": "${cloudwatch_data_source_type}",
+                "uid": "${cloudwatch_data_source_id}"
             },
             "dimensions": {
-                "ServiceName": "tsk-${environment}-api-svc"
+                "ServiceName": "${api_svc_name}"
             },
             "expression": "",
             "hide": false,
@@ -2042,25 +2042,13 @@
     "refresh": "30s",
     "schemaVersion": 39,
     "tags": [],
-    "templating": {
-        "list": [
-        {
-            "hide": 2,
-            "label": "env",
-            "name": "env",
-            "query": "${environment}",
-            "skipUrlSync": false,
-            "type": "constant"
-        }
-        ]
-    },
     "time": {
         "from": "now-6h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "tsk-${environment}-app-performance",
+    "title": "${title}",
     "version": 12,
     "weekStart": ""
 

@@ -5,6 +5,8 @@ on:
     branches:
       - '**'
   push:
+    paths:
+      - "terraform/**/*"
     branches:
       - production
       - stage
@@ -104,6 +106,7 @@ jobs:
 
   plan-apply:
     runs-on: ubuntu-latest
+    if: github.ref_name == 'dev' || github.ref_name == 'stage' || github.ref_name == 'production' 
     needs: trivy-scan
     environment: 'terraform-${{ github.ref_name }}'
     env:

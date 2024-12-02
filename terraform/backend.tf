@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.76.0"
     }
+    grafana = {
+      source  = "grafana/grafana"
+      version = "3.13.2"
+    }
   }
 
   backend "s3" {
