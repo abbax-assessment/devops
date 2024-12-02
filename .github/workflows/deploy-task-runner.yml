@@ -5,13 +5,13 @@ on:
     inputs:
       workflow-run-id:
         description: 'The upstream workflow run id'
-        required: true
+        required: false
       tag:
         description: 'The upstream workflow short-sha'
-        required: true
+        required: false
       artifact-name:
         description: 'The artifact name to deploy'
-        required: true
+        required: false
       environment:
         description: 'The environment to deploy'
         required: true

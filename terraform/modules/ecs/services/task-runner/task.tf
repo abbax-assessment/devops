@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name   = var.app_name,
-      image  = local.initial_image_uri,
+      image  = "nginx",
       cpu    = var.task_definition.app.cpu,
       memory = var.task_definition.app.memory,
       environment = [
@@ -23,6 +23,17 @@ resource "aws_ecs_task_definition" "this" {
           "awslogs-region" : data.aws_region.current.name,
           "awslogs-stream-prefix" : var.app_name
         }
+      },
+
+      healthCheck : {
+        command : [
+          "CMD-SHELL",
+          "which nginx || node ./utils/health-check/index.js"
+        ],
+        interval : 15,
+        timeout : 5,
+        retries : 3,
+        startPeriod : 10
       }
     },
     {
@@ -81,6 +92,13 @@ resource "aws_ecs_service" "this" {
     security_groups = [aws_security_group.service.id]
   }
 
+  deployment_minimum_healthy_percent = 50
+  deployment_maximum_percent         = 200
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   depends_on = [
     aws_iam_role.task_role,
     aws_iam_role.task_exec_role
@@ -103,21 +121,10 @@ resource "aws_security_group" "service" {
 }
 
 
-# TODO thelei all traffic
-resource "aws_vpc_security_group_egress_rule" "private_egress2" {
-  security_group_id = aws_security_group.service.id
-
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 0
-  to_port     = 0
-  ip_protocol = "tcp"
-}
-
 resource "aws_vpc_security_group_egress_rule" "private_egress" {
   security_group_id = aws_security_group.service.id
+  description       = "Allow access to the internet"
 
   cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 0
-  to_port     = 0
-  ip_protocol = "udp"
+  ip_protocol = "-1"
 }

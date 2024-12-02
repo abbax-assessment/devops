@@ -18,6 +18,7 @@ resource "aws_appautoscaling_policy" "cpu_scale_out" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
@@ -49,6 +50,7 @@ resource "aws_appautoscaling_policy" "cpu_scale_in" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
@@ -79,6 +81,7 @@ resource "aws_appautoscaling_policy" "memory_scale_out" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
@@ -110,6 +113,7 @@ resource "aws_appautoscaling_policy" "memory_scale_in" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
@@ -150,9 +154,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_out" {
     var.autoscale_alert_sns_topics,
     [aws_appautoscaling_policy.cpu_scale_out.arn]
   )
-
-  ok_actions = var.autoscale_alert_sns_topics
-
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_scale_in" {
@@ -173,9 +174,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_scale_in" {
     var.autoscale_alert_sns_topics,
     [aws_appautoscaling_policy.cpu_scale_in.arn]
   )
-
-  ok_actions = var.autoscale_alert_sns_topics
-
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_scale_out" {
@@ -196,8 +194,6 @@ resource "aws_cloudwatch_metric_alarm" "memory_scale_out" {
     var.autoscale_alert_sns_topics,
     [aws_appautoscaling_policy.memory_scale_out.arn]
   )
-
-  ok_actions = var.autoscale_alert_sns_topics
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_scale_in" {
@@ -218,6 +214,4 @@ resource "aws_cloudwatch_metric_alarm" "memory_scale_in" {
     var.autoscale_alert_sns_topics,
     [aws_appautoscaling_policy.memory_scale_in.arn]
   )
-
-  ok_actions = var.autoscale_alert_sns_topics
 }

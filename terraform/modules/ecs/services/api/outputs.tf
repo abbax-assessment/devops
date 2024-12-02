@@ -20,7 +20,7 @@ output "task_family_name" {
 
 output "codedeploy" {
   value = {
-    app_name = module.deploy.codedeploy_app_name
+    app_name   = module.deploy.codedeploy_app_name
     group_name = module.deploy.codedeploy_deployment_group_name
   }
 }
@@ -33,6 +33,26 @@ output "ecs_service_name" {
   value = aws_ecs_service.this.name
 }
 
+output "ecs_service_arn" {
+  value = aws_ecs_service.this.id
+}
+
 output "api_app_port" {
   value = var.port
+}
+
+output "logs_arn" {
+  value = aws_cloudwatch_log_group.this.arn
+}
+
+output "logs_name" {
+  value = aws_cloudwatch_log_group.this.name
+}
+
+output "alb_arn_suffix" {
+  value = aws_alb.this.arn_suffix
+}
+
+output "alb_domain_name" {
+  value = aws_alb.this.dns_name
 }

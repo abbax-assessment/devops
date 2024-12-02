@@ -1,3 +1,7 @@
+variable "prefix" {
+  type = string
+}
+
 variable "github_token" {
   type = string
 }
@@ -9,11 +13,15 @@ variable "repo_variables" {
 
 variable "repos" {
   type = list(object({
-    path = string
+    path        = string
     environment = string
     variables = list(object({
-      name = string
+      name  = string
       value = string
     }))
   }))
+}
+
+variable "tags" {
+  type = map(any)
 }

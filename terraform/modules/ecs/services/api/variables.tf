@@ -62,3 +62,6 @@ variable "tags" {
   type = map(any)
 }
 
+variable "certificate_arn" {
+  type = string  
+}
