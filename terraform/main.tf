@@ -43,8 +43,8 @@ module "dns" {
       dns_name    = module.cloudfront.aliases[0]
       hosted_zone = "public"
       type        = "A"
-      alias_name = module.cloudfront.cloudfront_distribution_domain
-      alias_zone = module.cloudfront.cloudfront_distribution_zone_id
+      alias_name  = module.cloudfront.cloudfront_distribution_domain
+      alias_zone  = module.cloudfront.cloudfront_distribution_zone_id
     }
   ]
 

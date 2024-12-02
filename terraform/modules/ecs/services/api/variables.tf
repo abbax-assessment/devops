@@ -63,5 +63,5 @@ variable "tags" {
 }
 
 variable "certificate_arn" {
-  type = string  
+  type = string
 }
