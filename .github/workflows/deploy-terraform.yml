@@ -116,6 +116,7 @@ jobs:
     environment: 'terraform-${{ github.ref_name }}'
     env:
       TF_VAR_github_token: ${{ secrets.ORG_TOKEN }}
+      TF_VAR_slack_webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
