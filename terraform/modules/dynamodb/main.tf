@@ -26,8 +26,4 @@ resource "aws_dynamodb_table" "this" {
     var.tags,
     tomap({ "Name" = "${var.prefix}-${var.table_name}" })
   )
-
-  lifecycle {
-    prevent_destroy = true
-  }
 }

@@ -77,10 +77,10 @@
             "resultReuseEnabled": false,
             "resultReuseMaxAgeInMinutes": 60
           },
-                "datasource": {
-        "type": "${athena_data_source_type}",
-        "uid": "${athena_data_source_id}"
-      },
+          "datasource": {
+            "type": "${athena_data_source_type}",
+            "uid": "${athena_data_source_id}"
+          },
           "format": 1,
           "rawSQL": "with successful_deployment as (\r\n    select deployment.id from deployment_status\r\n    where deployment_status.deployment_status.state='success'\r\n),\r\nall_deployments as (\r\n    select deployment.id from deployment_status\r\n    where deployment_status.deployment_status.state='in_progress'\r\n    group by deployment.id\r\n)\r\nselect \r\n    (\r\n        (select count(*) * 1.0 from successful_deployment) /\r\n        (select count(*) * 1.0 from all_deployments)\r\n    ) * 100 as success_rate",
           "refId": "A"
@@ -182,10 +182,10 @@
             "resultReuseEnabled": true,
             "resultReuseMaxAgeInMinutes": 60
           },
-                "datasource": {
-        "type": "${athena_data_source_type}",
-        "uid": "${athena_data_source_id}"
-      },
+          "datasource": {
+            "type": "${athena_data_source_type}",
+            "uid": "${athena_data_source_id}"
+          },
           "format": 1,
           "rawSQL": "with completed_workflow_runs as (\r\n    select workflow_run.id, project from github_data.workflow_run\r\n    where action='completed'\r\n),\r\njobs_runs as (\r\n    select \r\n        j.branch || '/' || j.project || '/' || j.workflow_job.workflow_name as run_full_name,\r\n        c.id as run_id,\r\n        date_diff(\r\n            'second',\r\n            date_parse(j.workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ'),\r\n            date_parse(j.workflow_job.completed_at, '%Y-%m-%dT%H:%i:%sZ')\r\n        ) as duration,\r\n        date_format(date_trunc('hour', date_parse(workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ')), '%Y-%m-%dT%H:00:00Z') AS rounded_start_time\r\n    from github_data.workflow_job as j\r\n    left join completed_workflow_runs as c\r\n    on j.workflow_job.run_id = c.id  \r\n    where j.project = c.project and action='completed'\r\n)\r\nselect \r\n    run_full_name, \r\n    rounded_start_time,\r\n    avg(duration) as avg_duration \r\nfrom jobs_runs\r\ngroup by run_full_name, rounded_start_time",
           "refId": "A"
@@ -281,10 +281,10 @@
             "resultReuseEnabled": true,
             "resultReuseMaxAgeInMinutes": 60
           },
-                "datasource": {
-        "type": "${athena_data_source_type}",
-        "uid": "${athena_data_source_id}"
-      },
+          "datasource": {
+            "type": "${athena_data_source_type}",
+            "uid": "${athena_data_source_id}"
+          },
           "format": 1,
           "rawSQL": "with completed_workflow_runs as (\r\n    select workflow_run.id, project from github_data.workflow_run\r\n    where action='completed'\r\n),\r\njobs_runs as (\r\n    select \r\n        j.branch || '/' || j.project || '/' || j.workflow_job.workflow_name as run_full_name,\r\n        c.id as run_id,\r\n        date_diff(\r\n            'second',\r\n            date_parse(j.workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ'),\r\n            date_parse(j.workflow_job.completed_at, '%Y-%m-%dT%H:%i:%sZ')\r\n        ) as duration,\r\n        date_format(date_trunc('hour', date_parse(workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ')), '%Y-%m-%dT%H:00:00Z') AS rounded_start_time\r\n    from github_data.workflow_job as j\r\n    left join completed_workflow_runs as c\r\n    on j.workflow_job.run_id = c.id  \r\n    where j.project = c.project and action='completed'\r\n)\r\nselect \r\n    run_full_name, \r\n    sum(duration)/60 as total_duration \r\nfrom jobs_runs\r\ngroup by run_full_name\r\norder by total_duration desc",
           "refId": "A"
@@ -373,10 +373,10 @@
             "resultReuseEnabled": false,
             "resultReuseMaxAgeInMinutes": 60
           },
-                "datasource": {
-        "type": "${athena_data_source_type}",
-        "uid": "${athena_data_source_id}"
-      },
+          "datasource": {
+            "type": "${athena_data_source_type}",
+            "uid": "${athena_data_source_id}"
+          },
           "format": 1,
           "rawSQL": "with completed_workflow_runs as (\r\n    select workflow_run.id, project from github_data.workflow_run\r\n    where action='completed'\r\n),\r\njobs_runs as (\r\n    select \r\n        j.branch || '/' || j.project || '/' || j.workflow_job.workflow_name as run_full_name,\r\n        c.id as run_id,\r\n        date_diff(\r\n            'second',\r\n            date_parse(j.workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ'),\r\n            date_parse(j.workflow_job.completed_at, '%Y-%m-%dT%H:%i:%sZ')\r\n        ) as duration,\r\n        date_format(date_trunc('hour', date_parse(workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ')), '%Y-%m-%dT%H:00:00Z') AS rounded_start_time\r\n    from github_data.workflow_job as j\r\n    left join completed_workflow_runs as c\r\n    on j.workflow_job.run_id = c.id  \r\n    where j.project = c.project and action='completed'\r\n)\r\nselect \r\n    run_full_name,\r\n    count(distinct run_id) as total_runs\r\nfrom jobs_runs\r\ngroup by run_full_name\r\norder by total_runs desc",
           "refId": "A"
@@ -445,10 +445,10 @@
             "resultReuseEnabled": false,
             "resultReuseMaxAgeInMinutes": 60
           },
-                "datasource": {
-        "type": "${athena_data_source_type}",
-        "uid": "${athena_data_source_id}"
-      },
+          "datasource": {
+            "type": "${athena_data_source_type}",
+            "uid": "${athena_data_source_id}"
+          },
           "format": 1,
           "rawSQL": "with completed_workflow_runs as (\r\n    select workflow_run.id, project from github_data.workflow_run\r\n    where action='completed' and workflow_run.conclusion='failure'\r\n),\r\njobs_runs as (\r\n    select \r\n        j.branch || '/' || j.project || '/' || j.workflow_job.workflow_name as run_full_name,\r\n        c.id as run_id,\r\n        date_diff(\r\n            'second',\r\n            date_parse(j.workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ'),\r\n            date_parse(j.workflow_job.completed_at, '%Y-%m-%dT%H:%i:%sZ')\r\n        ) as duration,\r\n        date_format(date_trunc('hour', date_parse(workflow_job.started_at, '%Y-%m-%dT%H:%i:%sZ')), '%Y-%m-%dT%H:00:00Z') AS rounded_start_time\r\n    from github_data.workflow_job as j\r\n    left join completed_workflow_runs as c\r\n    on j.workflow_job.run_id = c.id  \r\n    where j.project = c.project and action='completed'\r\n)\r\nselect \r\n    run_full_name,\r\n    count(distinct run_id) as total_runs\r\nfrom jobs_runs\r\ngroup by run_full_name\r\norder by total_runs desc",
           "refId": "A"

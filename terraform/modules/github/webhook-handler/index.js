@@ -7,9 +7,19 @@ exports.handler = async (event) => {
         console.log(JSON.stringify(event));
         const event_type = event.headers["x-github-event"];
         const project = payload.repository.name;
-        const branch = (payload.workflow_job || payload.workflow_run ).head_branch;
+        const branch = (
+            (payload.workflow_job && payload.workflow_job.head_branch) ||
+            (payload.workflow_run && payload.workflow_job.head_branch) ||
+            (payload.ref && payload.ref.split("/").pop()) ||
+            (payload.pull_request && payload.pull_request.head.ref)
+        );
 
-        console.log("Received github event", event);
+        console.log("Received github event", {
+            project,
+            branch,
+            event_type,
+            payload
+        });
         const record = {
             Data: JSON.stringify({
                 project,

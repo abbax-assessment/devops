@@ -4,7 +4,7 @@ resource "github_organization_webhook" "this" {
   configuration {
     url          = aws_apigatewayv2_api.github_webhook_api.api_endpoint
     content_type = "json"
-    insecure_ssl = true # TODO
+    insecure_ssl = false
   }
 
   active = true
@@ -14,7 +14,8 @@ resource "github_organization_webhook" "this" {
     "deployment_status",
     "push",
     "workflow_job",
-    "workflow_run"
+    "workflow_run",
+    "pull_request"
   ]
 }
 
@@ -119,6 +120,16 @@ resource "aws_apigatewayv2_stage" "default_stage" {
   api_id      = aws_apigatewayv2_api.github_webhook_api.id
   name        = "$default"
   auto_deploy = true
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.apigateway.arn
+    format          = "$context.requestId"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "apigateway" {
+  name = "${var.prefix}-apigateway-logs"
+  tags = var.tags
 }
 
 resource "aws_lambda_permission" "api_gateway_invoke" {
@@ -132,6 +143,14 @@ resource "aws_lambda_permission" "api_gateway_invoke" {
 resource "aws_s3_bucket" "github_events" {
   bucket = "${var.prefix}-github-events"
   tags   = var.tags
+}
+
+resource "aws_s3_bucket_public_access_block" "this" {
+  bucket                  = aws_s3_bucket.github_events.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_policy" "firehose_bucket_policy" {

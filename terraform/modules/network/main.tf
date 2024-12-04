@@ -7,11 +7,10 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "public_subnets" {
-  count                   = length(var.public_subnet_cidrs)
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = element(var.public_subnet_cidrs, count.index)
-  availability_zone       = element(var.azs, count.index)
-  map_public_ip_on_launch = true
+  count             = length(var.public_subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.public_subnet_cidrs, count.index)
+  availability_zone = element(var.azs, count.index)
 
   tags = merge(
     tomap({ "Name" = "${var.prefix}-public-${count.index + 1}" }),

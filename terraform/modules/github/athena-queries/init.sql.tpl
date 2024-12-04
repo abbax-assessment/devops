@@ -198,3 +198,18 @@ CREATE EXTERNAL TABLE IF NOT EXISTS github_${environment}_data.deployment_status
     >
 ) ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
 LOCATION 's3://${s3_bucket}/raw/event_type=deployment_status/';
+CREATE EXTERNAL TABLE IF NOT EXISTS github_dev_data.push (
+	project STRING,
+	branch STRING,
+	event_type STRING,
+	before STRING,
+	after STRING, 
+	action STRING,
+	repository STRUCT < 
+    	id: BIGINT,
+    	name: STRING,
+    	full_name: STRING,
+    	private: BOOLEAN 
+	>
+) ROW FORMAT SERDE 'org.apache.hive.hcatalog.data.JsonSerDe'
+LOCATION 's3://tsk-dev-github-events/raw/event_type=push/';

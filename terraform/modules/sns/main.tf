@@ -4,9 +4,7 @@ resource "aws_sns_topic" "this" {
 }
 
 resource "aws_sns_topic_subscription" "this" {
-  topic_arn              = aws_sns_topic.this.arn
-  endpoint_auto_confirms = false
-
-  protocol = "https"
-  endpoint = var.slack_webhook_url
+  topic_arn = aws_sns_topic.this.arn
+  protocol  = "lambda"
+  endpoint  = aws_lambda_function.slack_alert.arn
 }

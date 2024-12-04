@@ -1,0 +1,39 @@
+# AVD-AWS-0053
+# AVD-AWS-0017
+# AVD-AWS-0033
+# AVD-AWS-0088
+# AVD-AWS-0089
+# AVD-AWS-0090
+# AVD-AWS-0094
+# AVD-AWS-0132
+# AVD-AWS-0164
+# AVD-AWS-0178
+# AVD-AWS-0096
+# AVD-AWS-0104
+# AVD-AWS-0095
+# AVD-AWS-0006
+
+misconfigurations:
+  - id: AVD-AWS-0096
+  - id: AVD-AWS-0095
+  - id: AVD-AWS-0017
+  - id: AVD-AWS-0132
+  - id: AVD-AWS-0088
+  - id: AVD-AWS-0006
+  - id: AVD-AWS-0033
+  - id: AVD-AWS-0025
+    statement: We don't use encryption is this project
+  - id: AVD-AWS-0090
+  - id: AVD-AWS-0089
+  - id: AVD-AWS-0124
+  - id: AVD-AWS-0010
+  - id: AVD-AWS-0066
+    statement: Logging and versioning rules, not security concern
+  - id: AVD-AWS-0104
+    statement: Open outbound traffic since we don't use VPC Endpoints
+  - id: AVD-AWS-0053
+    statement: Public expose of the API ALB
+  - id: AVD-AWS-0107
+    paths:
+      - "modules/aws-grafana/workspace.tf"
+    statement: Only for the grafana workspace
