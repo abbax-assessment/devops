@@ -24,6 +24,7 @@ resource "aws_grafana_workspace" "this" {
     "XRAY"
   ]
 
+
   notification_destinations = ["SNS"]
 
 
