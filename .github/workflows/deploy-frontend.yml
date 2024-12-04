@@ -18,7 +18,7 @@ on:
         
 jobs:  
   deploy-revision:  
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: 'frontend-${{ github.event.inputs.environment }}'
     steps:
       - name: Configure AWS Credentials

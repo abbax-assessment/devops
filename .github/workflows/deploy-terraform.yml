@@ -15,7 +15,7 @@ on:
 
 jobs:     
   init:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-24.04  
     environment: 'terraform-${{ github.ref_name }}'
     steps:
       - name: Checkout code
@@ -50,7 +50,7 @@ jobs:
           terraform init
 
   validate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: init
     environment: 'terraform-${{ github.ref_name }}'
     steps:
@@ -76,7 +76,7 @@ jobs:
         run: terraform validate
 
   trivy-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: validate
     steps:
       - name: Checkout code
@@ -92,7 +92,7 @@ jobs:
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"        
         with:
           scan-type: 'config'
-          hide-progress: true
+          trivy-config: ./terraform/.trivy.yaml
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '1'
@@ -105,7 +105,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
   plan-apply:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.ref_name == 'dev' || github.ref_name == 'stage' || github.ref_name == 'production' 
     needs: trivy-scan
     environment: 'terraform-${{ github.ref_name }}'

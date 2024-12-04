@@ -19,21 +19,49 @@ This repository contains the configuration and scripts for managing the infrastr
 └──/frontend             # Frontend app
 ```
 
-Each repository has it's own Workflow CI file. The deployment process is being handled by this repo.
+Each repository has it's own Workflow CI file which triggers the deployment workflow in this repo. The deployment process is handled by this repo.
 
 ## Architecture
 The project structure is divided into 3 main sections. 
-1. AWS Infrastructure.
-
+### 1. AWS Infrastructure.
+   - Multi-az VPC with 2 public/private subnets
+   - ECS Fargate, ALB, SQS, DynamoDB
+   - AutoScaling Alarms
+   - Health checks
+   
 ![alt text](icons/image-1.png)
 
-2. Github Environments
+### 2. CI/CD Pipeline
 
-![alt text](icons/image-2.png)
+ - When we want to deploy a new app
+      1. We store the needed variables for running the deploy workflow (ecs service ids, arns, s3 buckets) in github environments using terraform `terraform/github.tf` module.
 
+         An example `task-ruuner-dev` environment in Github:
+
+         ![alt text](image-10.png)
+
+   - Continuous Integration (CI) pipelines are managed in the application code repositories (api, task-runner, frontend), encompassing processes such as build, test, static analysis, and artifact export. For commits pushed to the `dev`, `stage`, or `production` branches, an additional step, `trigger-deployment`, is executed in their workflows. This step initiates the deployment workflow located in the `devops` repository, using the specified GitHub environment as the context.
+
+      ![alt text](image-7.png)
+
+ - Continuous Delivery (CD) pipelines can be different for each application in the stack.. 
+      1. **API**: 
+         - Build Docker image.
+         - Push image to Amazon Elastic Container Registry (ECR).
+         - Perform a Blue/Green deployment behind a load balancer.
+      2. **Task Runner**: 
+         - Build Docker image.
+         - Push image to Amazon Elastic Container Registry (ECR).
+         - Execute a rolling deployment with rollback and circuit-breaker capabilities.
+      3. **Frontend**:
+         - Upload static assets to an S3 bucket.
+         - Invalidate the CDN cache to ensure changes are served promptly.
+
+
+         ![alt text](image-6.png)
 3. Monitoring
 
-![alt text](icons/image-3.png)
+![alt text](icons/image-3.png) 
 
 
 ## Prerequisites
@@ -168,6 +196,8 @@ It's visible from the costs explorer that the most expensive service is the EC2 
 - If yes, then switching to a serverless solution like AWS Lambda can be a cheaper alternative. It will significantly reduce the `idle` time and can be scaled up to a decent amount. A downside of Lambda functions are `cold-starts` during spikes which can affect user performance.
 3. Do I expect to have normal traffic but big sudden spikes?
 - If yes, a hybrid solution can be implemented. EC2 spot instances can be used for the daily normal traffic and scale up when needed by adding more EC2 instances, ECS Fargates tasks or AWS Lambda depending on the workload.
+
+# added vpc prviate links to remove the need for nat gateways
 
 ## Test Live Environment
 The `dev` environment is live. You can navigate to the website to add tasks and then process to the grafana dashboard to monitor metrics, logs, scaling
