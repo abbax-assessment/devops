@@ -65,6 +65,7 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
+
 resource "aws_iam_role" "assume" {
   name               = "${var.prefix}-grafana-assume-role"
   assume_role_policy = data.aws_iam_policy_document.assume.json
