@@ -8,7 +8,7 @@ The application consists of a frontend connected to an API that submits tasks to
 
 Here is a quick glance off the app flow from the `AWS X-RAY Service Map`:
 
-![alt text](image-1.png)
+![alt text](img/image-7.png)
 
 *It's key characteristics are*:
 
