@@ -179,7 +179,7 @@ Set the required secrets, variables to the organization and DevOps repo
 
 - We can see on this diagram our application will cost around $1.5 per day (with 1 environment).
 
-   ![alt text](image-18.png)
+   ![alt text](img/image-18.png)
 
 ### Cost analysis
 
