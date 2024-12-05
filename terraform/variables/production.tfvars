@@ -1,5 +1,5 @@
 domain_name = "deveros.click"
-prefix = "tsk"
+prefix      = "tsk"
 
 ecs_service_api_task_definition = {
   desired_count = 2

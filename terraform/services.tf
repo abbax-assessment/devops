@@ -25,6 +25,7 @@ module "tasks_sqs_queue" {
 
   max_task_receive_count     = 3
   visibility_timeout_seconds = 60
+  alarm_sns_topic_arn        = var.slack_webhook_url != null ? module.sns_slack_topic[0].sns_topic_arn : null
 
   tags = local.common_tags
 }
@@ -63,7 +64,7 @@ module "service_task_runner" {
   ecs_cluster_name           = module.ecs.ecs_cluster_name
   task_definition            = var.ecs_service_task_runner_task_definition
   task_queue_sqs_url         = module.tasks_sqs_queue.queue_url
-  autoscale_alert_sns_topics = [module.sns_slack_topic[0].sns_topic_arn]
+  autoscale_alert_sns_topics = var.slack_webhook_url != null ? [module.sns_slack_topic[0].sns_topic_arn] : []
 
   tags = local.common_tags
 }
