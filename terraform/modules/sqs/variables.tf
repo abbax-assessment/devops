@@ -48,7 +48,6 @@ variable "tags" {
 
 variable "alarm_sns_topic_arn" {
   description = "ARN of the SNS topic for alarm notifactions"
-  default     = null
 }
 
 variable "allowed_arns" {
