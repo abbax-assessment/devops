@@ -1,5 +1,4 @@
 module "sns_slack_topic" {
-  count             = var.slack_webhook_url != null ? 1 : 0
   source            = "./modules/sns"
   prefix            = local.prefix
   tags              = local.common_tags

@@ -83,7 +83,7 @@ resource "aws_cloudwatch_metric_alarm" "alarm" {
   statistic           = "Average"
   threshold           = var.allowed_items_max
   treat_missing_data  = "notBreaching"
-  alarm_actions       = [var.alarm_sns_topic_arn == null ? aws_sns_topic.alarm[0].arn : var.alarm_sns_topic_arn]
+  alarm_actions       = [var.alarm_sns_topic_arn]
   tags                = tomap(var.tags)
   dimensions = {
     "QueueName" = aws_sqs_queue.queue.name
@@ -101,15 +101,9 @@ resource "aws_cloudwatch_metric_alarm" "deadletter_alarm" {
   statistic           = "Average"
   threshold           = 1
   treat_missing_data  = "notBreaching"
-  alarm_actions       = [var.alarm_sns_topic_arn == null ? aws_sns_topic.alarm[0].arn : var.alarm_sns_topic_arn]
+  alarm_actions       = [var.alarm_sns_topic_arn]
   tags                = tomap(var.tags)
   dimensions = {
     "QueueName" = aws_sqs_queue.deadletter_queue.name
   }
-}
-
-resource "aws_sns_topic" "alarm" {
-  count = var.alarm_sns_topic_arn == null ? 1 : 0
-
-  name = "${var.name}-alarm-topic"
 }
