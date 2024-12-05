@@ -16,7 +16,6 @@ on:
 jobs:     
   init:
     runs-on: ubuntu-24.04  
-    environment: 'terraform-${{ github.ref_name }}'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -52,7 +51,6 @@ jobs:
   validate:
     runs-on: ubuntu-24.04
     needs: init
-    environment: 'terraform-${{ github.ref_name }}'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -147,4 +145,3 @@ jobs:
       - name: terraform apply
         working-directory: terraform
         run: terraform apply -var-file=./variables/${{ github.ref_name }}.tfvars -auto-approve
-        
