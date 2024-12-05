@@ -18,7 +18,7 @@ resource "aws_appautoscaling_policy" "cpu_scale_out" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
-    cooldown                 = 300
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
@@ -50,7 +50,7 @@ resource "aws_appautoscaling_policy" "cpu_scale_in" {
     adjustment_type          = "PercentChangeInCapacity"
     metric_aggregation_type  = "Average"
     min_adjustment_magnitude = 2
-    cooldown                 = 300
+    cooldown                 = 120
 
     step_adjustment {
       metric_interval_upper_bound = 40
