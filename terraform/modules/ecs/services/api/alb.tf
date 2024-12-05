@@ -1,36 +1,34 @@
 
 resource "aws_alb" "this" {
-  name            = "${var.prefix}-${var.app_name}-alb"
-  subnets         = var.public_subnets
-  security_groups = [aws_security_group.alb.id]
-  tags            = var.tags
+  name                       = "${var.prefix}-${var.app_name}-alb"
+  subnets                    = var.public_subnets
+  security_groups            = [aws_security_group.alb.id]
+  drop_invalid_header_fields = true
+
+  tags = var.tags
 }
 
 resource "aws_security_group" "alb" {
-  description = "Allow access to the api load balancer"
+  description = "Allow ECS API and CloudFront access"
   name        = "${var.prefix}-${var.app_name}-alb-sg"
   vpc_id      = var.vpc_id
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = [2]
+    content {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
-  ingress {
-    from_port   = 0
-    to_port     = 0
+
+  egress {
+    from_port   = var.port
+    to_port     = var.port
     protocol    = "tcp"
     cidr_blocks = var.private_subnets_cidr_blocks
-  }
-
-  // ALB most respond to ANY ip   
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"] //tfsec:ignore:aws-vpc-no-public-egress-sg
   }
 
   tags = merge(
@@ -38,6 +36,7 @@ resource "aws_security_group" "alb" {
     var.tags
   )
 }
+
 
 
 resource "aws_alb_target_group" "blue" {

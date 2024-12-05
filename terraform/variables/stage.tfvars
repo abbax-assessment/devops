@@ -1,4 +1,5 @@
-prefix = "tsk"
+domain_name = "deveros.click"
+prefix      = "tsk"
 
 ecs_service_api_task_definition = {
   desired_count = 2
@@ -38,5 +39,3 @@ ecs_service_task_runner_task_definition = {
   }
 }
 
-notifications_channel_slack_webhook = "https://hooks.slack.com/triggers/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"
-domain_name                         = "deveros.click"

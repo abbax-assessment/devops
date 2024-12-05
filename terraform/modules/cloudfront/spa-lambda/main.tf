@@ -1,5 +1,4 @@
 
-//tfsec:ignore:aws-lambda-enable-tracing
 resource "aws_lambda_function" "this" {
   function_name = "${var.prefix}-spa-redirections"
 

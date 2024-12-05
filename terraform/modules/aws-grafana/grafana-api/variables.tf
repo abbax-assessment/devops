@@ -38,6 +38,11 @@ variable "sqs_tasks_name" {
   type = string
 }
 
+variable "sqs_tasks_dlq_name" {
+  type = string
+}
+
+
 variable "alb_arn_suffix" {
   type = string
 }
@@ -46,8 +51,16 @@ variable "grafana_workspace_url" {
   type = string
 }
 
+variable "grafana_workspace_id" {
+  type = string
+}
 
-variable "grafana_service_token" {
+
+variable "dynamodb_tasks_table_name" {
+  type = string
+}
+
+variable "grafana_service_account_id" {
   type = string
 }
 

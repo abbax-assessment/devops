@@ -13,3 +13,7 @@ variable "vpc_id" {
 variable "tags" {
   type = map(any)
 }
+
+variable "github_athena_s3" {
+  type = string
+}

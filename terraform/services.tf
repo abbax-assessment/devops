@@ -4,6 +4,14 @@ module "ecs" {
   tags   = local.common_tags
 }
 
+module "tasks_dynamodb_table" {
+  source = "./modules/dynamodb"
+
+  prefix     = local.prefix
+  table_name = "tasks"
+  tags       = local.common_tags
+}
+
 module "tasks_sqs_queue" {
   source = "./modules/sqs"
 
@@ -17,6 +25,7 @@ module "tasks_sqs_queue" {
 
   max_task_receive_count     = 3
   visibility_timeout_seconds = 60
+  alarm_sns_topic_arn        = var.slack_webhook_url != null ? module.sns_slack_topic[0].sns_topic_arn : null
 
   tags = local.common_tags
 }
@@ -30,6 +39,8 @@ module "service_api" {
   public_subnets              = module.network.public_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
   certificate_arn             = module.certificates.eu_west_region_arn
+  tasks_dynamodb_table_arn    = module.tasks_dynamodb_table.table_arn
+  tasks_dynamodb_table_name   = module.tasks_dynamodb_table.table_name
 
   ecs_cluster_id     = module.ecs.ecs_cluster_id
   ecs_cluster_name   = module.ecs.ecs_cluster_name
@@ -46,12 +57,14 @@ module "service_task_runner" {
   vpc_id                      = module.network.vpc_id
   private_subnets             = module.network.private_subnets[*].id
   private_subnets_cidr_blocks = module.network.private_subnets[*].cidr_block
+  tasks_dynamodb_table_arn    = module.tasks_dynamodb_table.table_arn
+  tasks_dynamodb_table_name   = module.tasks_dynamodb_table.table_name
 
   ecs_cluster_id             = module.ecs.ecs_cluster_id
   ecs_cluster_name           = module.ecs.ecs_cluster_name
   task_definition            = var.ecs_service_task_runner_task_definition
   task_queue_sqs_url         = module.tasks_sqs_queue.queue_url
-  autoscale_alert_sns_topics = [module.sns_slack_topic[0].sns_topic_arn]
+  autoscale_alert_sns_topics = var.slack_webhook_url != null ? [module.sns_slack_topic[0].sns_topic_arn] : []
 
   tags = local.common_tags
 }

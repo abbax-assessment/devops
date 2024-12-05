@@ -65,3 +65,11 @@ variable "tags" {
 variable "certificate_arn" {
   type = string
 }
+
+variable "tasks_dynamodb_table_arn" {
+  type = string
+}
+
+variable "tasks_dynamodb_table_name" {
+  type = string
+}

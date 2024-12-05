@@ -98,4 +98,5 @@ resource "aws_cloudfront_distribution" "this" {
 
   wait_for_deployment = false
 
+  web_acl_id = aws_wafv2_web_acl.this.arn
 }

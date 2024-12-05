@@ -1,11 +1,13 @@
-const path = require('path')
+'use strict';
 
-exports.handler = (evt, ctx, cb) => {
-    const {request} = evt.Records[0].cf
+exports.handler = async (event) => {
+    const request = event.Records[0].cf.request;
+    const uri = request.uri;
 
-    if (!path.extname(request.uri)) {
-        request.uri = '/index.html'
+    // Rewrite requests to index.html if they don't match a file or folder
+    if (!uri.match(/\.\w+$/)) {
+        request.uri = '/index.html';
     }
 
-    cb(null, request)
-}
+    return request;
+};
