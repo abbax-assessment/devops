@@ -24,6 +24,7 @@ resource "aws_grafana_workspace" "this" {
     "XRAY"
   ]
 
+
   notification_destinations = ["SNS"]
 
 
@@ -41,20 +42,6 @@ resource "aws_grafana_workspace_service_account" "this" {
   workspace_id = aws_grafana_workspace.this.id
 }
 
-resource "time_rotating" "this" {
-  rotation_minutes = 60 * 24 * 30
-}
-
-resource "aws_grafana_workspace_service_account_token" "this" {
-  name               = "${var.prefix}-tf-admin-key-${time_rotating.this.id}"
-  service_account_id = aws_grafana_workspace_service_account.this.service_account_id
-  seconds_to_live    = 2592000
-  workspace_id       = aws_grafana_workspace.this.id
-
-  depends_on = [time_rotating.this]
-}
-
-
 resource "aws_security_group" "this" {
   description = "Allow access to Grafana workspace"
   name        = "${var.prefix}-grafana-sg"
@@ -65,7 +52,6 @@ resource "aws_security_group" "this" {
     var.tags
   )
 }
-
 
 resource "aws_vpc_security_group_ingress_rule" "public_access" {
   security_group_id = aws_security_group.this.id

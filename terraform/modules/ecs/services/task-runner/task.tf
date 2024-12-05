@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "this" {
           "CMD-SHELL",
           "which nginx || node ./utils/health-check/index.js"
         ],
-        interval : 15,
+        interval : 120,
         timeout : 5,
         retries : 3,
         startPeriod : 10

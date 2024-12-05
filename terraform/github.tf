@@ -1,10 +1,8 @@
+# File: devops/terraform/github.tf
 module "github" {
   source = "./modules/github"
-
-
   prefix       = local.prefix
   github_token = var.github_token
-
   repos = [
     {
       path = "devops",

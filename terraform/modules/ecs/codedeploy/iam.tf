@@ -31,12 +31,7 @@ data "aws_iam_policy_document" "codedeploy" {
       "elasticloadbalancing:ModifyRule"
     ]
 
-    resources = [
-      "*"
-      # var.ecs_service_arn,
-      # var.ecs_task_arn,
-      # var.alb_arn
-    ]
+    resources = ["*"]
   }
   statement {
     sid    = "AllowPassRole"
@@ -44,9 +39,7 @@ data "aws_iam_policy_document" "codedeploy" {
 
     actions = ["iam:PassRole"]
 
-    resources = [
-      "*" #TODO
-    ]
+    resources = ["*"]
   }
 
   statement {
@@ -62,13 +55,7 @@ data "aws_iam_policy_document" "codedeploy" {
       "codedeploy:RegisterApplicationRevision"
     ]
 
-    resources = [
-      "*",
-      # var.ecs_service_arn,
-      # aws_codedeploy_deployment_group.this.arn,
-      # "arn:aws:codedeploy:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:deploymentconfig:*}",
-      # aws_codedeploy_app.this.arn
-    ]
+    resources = ["*"]
   }
 
 

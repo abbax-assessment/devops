@@ -12,6 +12,25 @@ terraform {
   }
 }
 
+provider "grafana" {
+  url  = var.grafana_workspace_url
+  auth = aws_grafana_workspace_service_account_token.this.key
+}
+
+resource "time_rotating" "this" {
+  rotation_minutes = 1000000
+}
+
+# state rm module.aws_grafana.aws_grafana_workspace_service_account_token.this
+resource "aws_grafana_workspace_service_account_token" "this" {
+  name               = "tsk-dev-tf-admin-key-2024-12-03T03:15:52Z"
+  service_account_id = var.grafana_service_account_id
+  seconds_to_live    = 2592000
+  workspace_id       = var.grafana_workspace_id
+
+  # depends_on = [time_rotating.this]
+}
+
 resource "grafana_data_source" "cloudwatch" {
   type = "cloudwatch"
   name = "cw"
@@ -26,7 +45,7 @@ data "http" "xray_install" {
   url = "${var.grafana_workspace_url}/api/plugins/grafana-x-ray-datasource/install"
 
   request_headers = {
-    Authorization = "Bearer ${var.grafana_service_token}"
+    Authorization = "Bearer ${aws_grafana_workspace_service_account_token.this.key}"
     Content-Type  = "application/json"
   }
 
@@ -41,14 +60,17 @@ resource "grafana_data_source" "xray" {
     defaultRegion = "eu-west-1"
   })
 
-  depends_on = [data.http.xray_install]
+  depends_on = [
+    data.http.xray_install,
+    aws_grafana_workspace_service_account_token.this
+  ]
 }
 
 data "http" "github_install" {
   url = "${var.grafana_workspace_url}/api/plugins/grafana-github-datasource/install"
 
   request_headers = {
-    Authorization = "Bearer ${var.grafana_service_token}"
+    Authorization = "Bearer ${aws_grafana_workspace_service_account_token.this.key}"
     Content-Type  = "application/json"
   }
 
@@ -65,14 +87,17 @@ resource "grafana_data_source" "github" {
     accessToken      = var.github_token
   })
 
-  depends_on = [data.http.github_install]
+  depends_on = [
+    data.http.github_install,
+    aws_grafana_workspace_service_account_token.this
+  ]
 }
 
 data "http" "athena_install" {
   url = "${var.grafana_workspace_url}/api/plugins/grafana-athena-datasource/install"
 
   request_headers = {
-    Authorization = "Bearer ${var.grafana_service_token}"
+    Authorization = "Bearer ${aws_grafana_workspace_service_account_token.this.key}"
     Content-Type  = "application/json"
   }
 
@@ -91,5 +116,34 @@ resource "grafana_data_source" "athena" {
     workgroup     = "tsk-dev-github-workgroup"
   })
 
-  depends_on = [data.http.athena_install]
+  depends_on = [
+    data.http.athena_install,
+    aws_grafana_workspace_service_account_token.this
+  ]
 }
+
+data "http" "alarms_install" {
+  url = "${var.grafana_workspace_url}/api/plugins/computest-cloudwatchalarm-datasource/install"
+
+  request_headers = {
+    Authorization = "Bearer ${aws_grafana_workspace_service_account_token.this.key}"
+    Content-Type  = "application/json"
+  }
+
+  method = "POST"
+}
+
+resource "grafana_data_source" "alarms" {
+  type = "computest-cloudwatchalarm-datasource"
+  name = "cw-alarms"
+
+  json_data_encoded = jsonencode({
+    authType = "workspace_assume_role"
+  })
+
+  depends_on = [
+    data.http.alarms_install,
+    aws_grafana_workspace_service_account_token.this
+  ]
+}
+
