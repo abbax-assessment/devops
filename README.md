@@ -6,7 +6,8 @@ This project demonstrates an event-driven, highly scalable, highly available, fa
 
 The application consists of a frontend connected to an API that submits tasks to an Amazon SQS queue, while a separate microservice, deployed on Amazon ECS, processes these tasks. Currently, the tasks are designed solely to consume CPU resources for 2–5 seconds, simulating a workflow without performing any meaningful operations.
 
-Here is a quick glance off the app flow from the `AWS X-RAY Service Map`
+Here is a quick glance off the app flow from the `AWS X-RAY Service Map`:
+
 ![alt text](image-1.png)
 
 *It's key characteristics are*:
