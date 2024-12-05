@@ -153,14 +153,14 @@ jobs:
           APPSPEC_FILE="appspec.yaml"
           cat > "$APPSPEC_FILE" <<EOL
           version: 0.0
-            Resources:
-              - TargetService:
-                  Type: AWS::ECS::Service
-                  Properties:
-                    TaskDefinition: $
-                    LoadBalancerInfo:
-                      ContainerName: ${{ vars.CONTAINER_NAME_API }}
-                      ContainerPort: ${{ vars.API_APP_PORT }}
+          Resources:
+            - TargetService:
+                Type: AWS::ECS::Service
+                Properties:
+                  TaskDefinition: $
+                  LoadBalancerInfo:
+                    ContainerName: ${{ vars.CONTAINER_NAME_API }}
+                    ContainerPort: ${{ vars.API_APP_PORT }}
           EOL
 
       - name: Update ECS Service Revision
